@@ -1,0 +1,9 @@
+commands.structure.usage=/structure <start|continue|component|bb>
+commands.structure.start.usage=/structure start <x> <y> <z> <structureName> [dataTag] [debug]
+commands.structure.continue.usage=/structure continue
+commands.structure.component.usage=/structure component <x> <y> <z> <compName> [dataTag]
+commands.structure.component.success=Place structure component at (%d,%d,%d) to (%d,%d,%d).
+commands.structure.component.invalidName=The name of structure component is invalid!
+commands.structure.component.invalidTag=Not a valid tag!
+commands.structure.component.tagError=Data tag parsing failed: %s.
+commands.structure.bb.usage=/structure bb clear
