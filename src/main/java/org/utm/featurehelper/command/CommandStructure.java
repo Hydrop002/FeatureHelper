@@ -93,7 +93,7 @@ public class CommandStructure extends CommandBase {
 	    	        component.func_143009_a(world, compound);
 	        	}
 	        	StructureBoundingBox bb = component.getBoundingBox();
-	        	StructureBoundingBox newBB = new StructureBoundingBox(bb.minX - 1, bb.minY - 1, bb.minZ - 1, bb.maxX + 1, bb.maxY + 1, bb.maxZ + 1);
+	        	StructureBoundingBox newBB = new StructureBoundingBox(bb.minX - 1, bb.minZ - 1, bb.maxX + 1, bb.maxZ + 1);
 	        	component.addComponentParts(world, rand, newBB);
 	        	this.setLastBoundingBox(bb);
 	        	func_152373_a(sender, this, "commands.structure.component.success", bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
