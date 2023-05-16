@@ -1,6 +1,12 @@
 commands.structure.usage=/structure <start|continue|component|bb>
-commands.structure.start.usage=/structure start <x> <y> <z> <structureName> [dataTag] [debug]
+commands.structure.start.usage=/structure start <x> <y> <z> <structureName> [debug] [dataTag]
+commands.structure.start.success=Place structure start at (%d,%d,%d).
+commands.structure.start.invalidName=The name of structure start is invalid!
+commands.structure.start.invalidTag=Not a valid tag!
+commands.structure.start.tagError=Data tag parsing failed: %s.
 commands.structure.continue.usage=/structure continue
+commands.structure.continue.success=Continue to generate structures.
+commands.structure.continue.complete=No more structures can generate.
 commands.structure.component.usage=/structure component <x> <y> <z> <compName> [dataTag]
 commands.structure.component.success=Place structure component at (%d,%d,%d) to (%d,%d,%d).
 commands.structure.component.invalidName=The name of structure component is invalid!

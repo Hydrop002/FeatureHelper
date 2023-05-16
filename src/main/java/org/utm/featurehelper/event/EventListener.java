@@ -18,6 +18,7 @@ public class EventListener {
 		EntityLivingBase entity = Minecraft.getMinecraft().renderViewEntity;
 		CommandStructure command = (CommandStructure) MinecraftServer.getServer().getCommandManager().getCommands().get("structure");
 		RenderBoundingBox.instance.render(entity, command.getLastBoundingBox(), event.partialTicks);
+		RenderBoundingBox.instance.renderList(entity, command.getBoundingBoxList(), event.partialTicks);
 	}
 
 }
