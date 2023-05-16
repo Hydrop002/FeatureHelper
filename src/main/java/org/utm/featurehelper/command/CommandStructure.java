@@ -64,10 +64,10 @@ public class CommandStructure extends CommandBase {
 	        			component.addComponentParts(world, rand, newBB);
 	        			this.addBoundingBox(component.getBoundingBox());
 	        		}
-	        		if (!this.it.hasNext())
-	        			this.addBoundingBox(null);
 	        		func_152373_a(sender, this, "commands.structure.continue.success");
 				} else {
+					if (this.canAddBoundingBox())
+						this.addBoundingBox(null);
 					func_152373_a(sender, this, "commands.structure.continue.complete");
 				}
 			}
@@ -250,7 +250,11 @@ public class CommandStructure extends CommandBase {
 		this.bbList.clear();
 		this.lastBB = null;
 	}
-	
+
+	public boolean canAddBoundingBox() {
+		return !this.bbList.contains(null);
+	}
+
 	public void addBoundingBox(StructureBoundingBox bb) {
 		this.bbList.add(bb);
 	}
