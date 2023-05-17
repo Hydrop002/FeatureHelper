@@ -203,7 +203,7 @@ public class CommandStructure extends CommandBase {
 
         }
     }
-    
+
     @Override
     public List addTabCompletionOptions(ICommandSender sender, String[] args) {
         if (args.length == 1)

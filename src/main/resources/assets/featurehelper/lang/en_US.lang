@@ -13,3 +13,5 @@ commands.structure.component.invalidName=The name of structure component is inva
 commands.structure.component.invalidTag=Not a valid tag!
 commands.structure.component.tagError=Data tag parsing failed: %s.
 commands.structure.bb.usage=/structure bb clear
+
+commands.cave.usage=/cave <start|continue>

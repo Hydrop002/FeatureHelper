@@ -2,7 +2,7 @@
 
 使用命令生成洞穴、峡谷、结构和地物。
 
-![img](https://github.com/Hydrop002/FeatureHelper/tree/master/img/main.png)
+![img](https://github.com/Hydrop002/FeatureHelper/blob/master/img/main.png)
 
 已实现：
 * 结构组件生成
