@@ -5,9 +5,9 @@ import org.utm.featurehelper.command.CommandStructure;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 public class CommonProxy {
-	
-	public void serverStarting(FMLServerStartingEvent event) {
-		event.registerServerCommand(new CommandStructure());
-	}
+    
+    public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandStructure());
+    }
 
 }
