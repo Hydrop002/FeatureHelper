@@ -1,11 +1,16 @@
+# Gradle
 /.gradle/
+/build/
+
+# Eclipse
 /.settings/
 /bin/
-/build/
 /eclipse/
-/out/
 /.classpath
 /.project
-/FeatureHelper-1.7.10.iml
-/FeatureHelper-1.7.10.ipr
-/FeatureHelper-1.7.10.iws
+
+# Idea
+/out/
+/*.iml
+/*.ipr
+/*.iws
