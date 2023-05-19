@@ -64,7 +64,7 @@ public class CommandStructure extends CommandBase {
                 StructureBoundingBox newBB = new StructureBoundingBox(bb.minX - 1, bb.minZ - 1, bb.maxX + 1, bb.maxZ + 1);
                 this.setLastBoundingBox(bb);
                 if (this.it != null && this.it.hasNext()) {
-                    StructureComponent component = (StructureComponent) this.it.next();
+                    StructureComponent component = this.it.next();
                     if (component.getBoundingBox().intersectsWith(newBB)) {
                         component.addComponentParts(world, rand, newBB);
                         this.addBoundingBox(component.getBoundingBox());
@@ -124,7 +124,7 @@ public class CommandStructure extends CommandBase {
             if (debug) {
                 this.it = this.start.getComponents().iterator();
                 if (this.it.hasNext()) {
-                    StructureComponent component = (StructureComponent) this.it.next();
+                    StructureComponent component = this.it.next();
                     if (component.getBoundingBox().intersectsWith(newBB)) {
                         component.addComponentParts(world, rand, newBB);
                         this.addBoundingBox(component.getBoundingBox());
@@ -201,6 +201,8 @@ public class CommandStructure extends CommandBase {
                 throw new WrongUsageException("commands.structure.bb.usage");
             }
 
+        } else {
+            throw new WrongUsageException("commands.structure.usage");
         }
     }
 
