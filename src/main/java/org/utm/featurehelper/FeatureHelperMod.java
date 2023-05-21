@@ -1,5 +1,6 @@
 package org.utm.featurehelper;
 
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import org.utm.featurehelper.event.EventListener;
 
 import cpw.mods.fml.common.Mod;
@@ -28,6 +29,11 @@ public class FeatureHelperMod {
 
     @SidedProxy(clientSide = "org.utm.featurehelper.ClientProxy", serverSide = "org.utm.featurehelper.CommonProxy")
     public static CommonProxy proxy;
+
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        proxy.preInit(event);
+    }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {

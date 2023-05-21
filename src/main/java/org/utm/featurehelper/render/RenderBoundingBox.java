@@ -1,6 +1,6 @@
 package org.utm.featurehelper.render;
 
-import java.util.ConcurrentModificationException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,14 +18,17 @@ public class RenderBoundingBox {
 
     public Frustrum frustrum = new Frustrum();
 
-    public void render(EntityLivingBase entity, StructureBoundingBox bb, float partialTicks) {
-        if (bb == null)
+    public StructureBoundingBox bb;
+    public List<StructureBoundingBox> bbList = new ArrayList<StructureBoundingBox>();
+
+    public void render(EntityLivingBase entity, float partialTicks) {
+        if (this.bb == null)
             return;
         double cameraX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
         double cameraY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
         double cameraZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
         this.frustrum.setPosition(cameraX, cameraY, cameraZ);
-        AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(bb.minX, bb.minY, bb.minZ, bb.maxX + 1, bb.maxY + 1, bb.maxZ + 1);
+        AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(this.bb.minX, this.bb.minY, this.bb.minZ, this.bb.maxX + 1, this.bb.maxY + 1, this.bb.maxZ + 1);
         if (this.frustrum.isBoundingBoxInFrustum(aabb)) {
             GL11.glPushMatrix();
             GL11.glTranslated(-cameraX, -cameraY, -cameraZ);
@@ -42,22 +45,18 @@ public class RenderBoundingBox {
         }
     }
 
-    public void renderList(EntityLivingBase entity, List<StructureBoundingBox> bbList, float partialTicks) {
-        if (bbList.isEmpty())
+    public void renderList(EntityLivingBase entity, float partialTicks) {
+        if (this.bbList.isEmpty())
             return;
         double cameraX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
         double cameraY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
         double cameraZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
         this.frustrum.setPosition(cameraX, cameraY, cameraZ);
-        Iterator<StructureBoundingBox> it = bbList.iterator();
+        Iterator<StructureBoundingBox> it = this.bbList.iterator();
         boolean start = true;
         while (it.hasNext()) {
             StructureBoundingBox bb;
-            try {
-                bb = it.next();
-            } catch (ConcurrentModificationException e) {
-                return;
-            }
+            bb = it.next();
             if (bb == null)
                 return;
             if (it.hasNext() || entity.ticksExisted % 20 < 10) {

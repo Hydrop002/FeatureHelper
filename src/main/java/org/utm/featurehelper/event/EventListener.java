@@ -1,5 +1,7 @@
 package org.utm.featurehelper.event;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import org.utm.featurehelper.command.CommandStructure;
 import org.utm.featurehelper.render.RenderBoundingBox;
 
@@ -16,9 +18,17 @@ public class EventListener {
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
         EntityLivingBase entity = Minecraft.getMinecraft().renderViewEntity;
-        CommandStructure command = (CommandStructure) MinecraftServer.getServer().getCommandManager().getCommands().get("structure");
-        RenderBoundingBox.instance.render(entity, command.getLastBoundingBox(), event.partialTicks);
-        RenderBoundingBox.instance.renderList(entity, command.getBoundingBoxList(), event.partialTicks);
+        RenderBoundingBox.instance.render(entity, event.partialTicks);
+        RenderBoundingBox.instance.renderList(entity, event.partialTicks);
+    }
+
+    @SubscribeEvent
+    public void onEntityJoinWorld(EntityJoinWorldEvent event) {
+        if (!event.world.isRemote && event.entity instanceof EntityPlayerMP) {
+            EntityPlayerMP player = (EntityPlayerMP) event.entity;
+            CommandStructure command = (CommandStructure) MinecraftServer.getServer().getCommandManager().getCommands().get("structure");
+            command.sendMessageToPlayer(player);
+        }
     }
 
 }

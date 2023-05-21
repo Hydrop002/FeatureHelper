@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.*;
+import org.utm.featurehelper.network.MessageBoundingBox;
+import org.utm.featurehelper.network.NetworkManager;
 import org.utm.featurehelper.structure.ComponentFactory;
 import org.utm.featurehelper.structure.StartFactory;
 
@@ -14,11 +18,6 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
@@ -28,7 +27,7 @@ import net.minecraft.world.gen.structure.StructureStart;
 
 public class CommandStructure extends CommandBase {
 
-    private List<StructureBoundingBox> bbList = new ArrayList();
+    private List<StructureBoundingBox> bbList = new ArrayList<StructureBoundingBox>();
     private StructureBoundingBox lastBB;
 
     private Iterator<StructureComponent> it;
@@ -253,29 +252,56 @@ public class CommandStructure extends CommandBase {
         }
     }
 
-    public void clearBoundingBox() {
-        this.bbList.clear();
-        this.lastBB = null;
-    }
-
     public boolean canAddBoundingBox() {
         return !this.bbList.contains(null);
     }
 
-    public void addBoundingBox(StructureBoundingBox bb) {
-        this.bbList.add(bb);
+    public void clearBoundingBox() {
+        this.bbList.clear();
+        this.lastBB = null;
+        this.sendMessage();
     }
 
-    public List<StructureBoundingBox> getBoundingBoxList() {
-        return this.bbList;
+    public void addBoundingBox(StructureBoundingBox bb) {
+        this.bbList.add(bb);
+        this.sendMessage();
     }
 
     public void setLastBoundingBox(StructureBoundingBox bb) {
         this.lastBB = bb;
+        this.sendMessage();
     }
 
-    public StructureBoundingBox getLastBoundingBox() {
-        return this.lastBB;
+    public void sendMessage() {
+        NBTTagList list = new NBTTagList();
+        for (StructureBoundingBox bb : this.bbList) {
+            if (bb == null)
+                list.appendTag(new NBTTagIntArray(new int[0]));
+            else
+                list.appendTag(bb.func_151535_h());
+        }
+        MessageBoundingBox message = new MessageBoundingBox();
+        message.bb = new NBTTagCompound();
+        message.bb.setTag("BBList", list);
+        if (this.lastBB != null)
+            message.bb.setTag("lastBB", this.lastBB.func_151535_h());
+        NetworkManager.instance.sendToAll(message);
+    }
+
+    public void sendMessageToPlayer(EntityPlayerMP player) {
+        NBTTagList list = new NBTTagList();
+        for (StructureBoundingBox bb : this.bbList) {
+            if (bb == null)
+                list.appendTag(new NBTTagIntArray(new int[0]));
+            else
+                list.appendTag(bb.func_151535_h());
+        }
+        MessageBoundingBox message = new MessageBoundingBox();
+        message.bb = new NBTTagCompound();
+        message.bb.setTag("BBList", list);
+        if (this.lastBB != null)
+            message.bb.setTag("lastBB", this.lastBB.func_151535_h());
+        NetworkManager.instance.sendTo(message, player);
     }
 
 }
