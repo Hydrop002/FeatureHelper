@@ -164,18 +164,18 @@ public class CommandStructure extends CommandBase {
                             String key = (String) obj;
                             NBTBase value = ((NBTTagCompound) nbtbase).getTag(key);
                             compound.setTag(key, value);
-//                            if (key.equals("~BB")) {
-//                                int[] arr = compound.getIntArray("BB");
-//                                int[] offset = ((NBTTagIntArray) value).func_150302_c();
-//                                compound.setIntArray("BB", new int[] {
-//                                    arr[0] + offset[0],
-//                                    arr[1] + offset[1],
-//                                    arr[2] + offset[2],
-//                                    arr[3] + offset[3],
-//                                    arr[4] + offset[4],
-//                                    arr[5] + offset[5]
-//                                });
-//                            }
+                            /*if (key.equals("~BB")) {
+                                int[] arr = compound.getIntArray("BB");
+                                int[] offset = ((NBTTagIntArray) value).func_150302_c();
+                                compound.setIntArray("BB", new int[] {
+                                    arr[0] + offset[0],
+                                    arr[1] + offset[1],
+                                    arr[2] + offset[2],
+                                    arr[3] + offset[3],
+                                    arr[4] + offset[4],
+                                    arr[5] + offset[5]
+                                });
+                            }*/
                         }
                     } catch (NBTException e) {
                         throw new CommandException("commands.structure.component.tagError", e.getMessage());
@@ -196,6 +196,7 @@ public class CommandStructure extends CommandBase {
                 throw new WrongUsageException("commands.structure.bb.usage");
             if (args[1].equals("clear")) {
                 this.clearBoundingBox();
+                func_152373_a(sender, this, "commands.structure.bb.clear.success");
             } else {
                 throw new WrongUsageException("commands.structure.bb.usage");
             }
@@ -272,6 +273,20 @@ public class CommandStructure extends CommandBase {
         this.sendMessage();
     }
 
+    /*
+    SimpleNetworkWrapper.sendToAll
+    AbstractChannel.writeAndFlush
+    DefaultChannelPipeline.writeAndFlush
+    DefaultChannelHandlerContext.writeAndFlush
+    DefaultChannelHandlerContext.writeAndFlush
+    DefaultChannelHandlerContext.write
+    DefaultChannelHandlerContext.invokeWrite
+    MessageToMessageCodec.write
+    MessageToMessageEncoder.write
+    MessageToMessageCodec.encode
+    FMLIndexedMessageToMessageCodec.encode
+    FMLProxyPacket
+    */
     public void sendMessage() {
         NBTTagList list = new NBTTagList();
         for (StructureBoundingBox bb : this.bbList) {
