@@ -3,6 +3,7 @@ package org.utm.featurehelper;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 import org.utm.featurehelper.command.CommandCave;
+import org.utm.featurehelper.command.CommandPopulate;
 import org.utm.featurehelper.command.CommandStructure;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -18,6 +19,7 @@ public class CommonProxy {
     public void serverStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandStructure());
         event.registerServerCommand(new CommandCave());
+        event.registerServerCommand(new CommandPopulate());
     }
 
 }
