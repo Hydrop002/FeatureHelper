@@ -11,8 +11,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.*;
 import org.utm.featurehelper.network.MessageBoundingBox;
 import org.utm.featurehelper.network.NetworkManager;
-import org.utm.featurehelper.structure.ComponentFactory;
-import org.utm.featurehelper.structure.StartFactory;
+import org.utm.featurehelper.feature.ComponentFactory;
+import org.utm.featurehelper.feature.StartFactory;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

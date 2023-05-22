@@ -21,3 +21,6 @@ commands.cave.start.success=§4TO BE CONTINUE!
 commands.cave.continue.usage=/cave continue
 commands.cave.continue.success=§4TO BE CONTINUE!
 commands.cave.continue.complete=§4TO BE CONTINUE!
+
+commands.populate.usage=/populate <x> <y> <z> <featureName> [args...]
+commands.populate.invalidName=The name of feature is invalid!

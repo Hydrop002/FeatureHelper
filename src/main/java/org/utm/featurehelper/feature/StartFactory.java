@@ -1,4 +1,4 @@
-package org.utm.featurehelper.structure;
+package org.utm.featurehelper.feature;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import net.minecraft.world.gen.structure.StructureStart;
 
 public class StartFactory {
     
-    private static Map<String, IStart> factory = new HashMap();
+    private static Map<String, IStart> factory = new HashMap<String, IStart>();
     
     static {
         factory.put("Mineshaft", new IStart() {

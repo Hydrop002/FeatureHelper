@@ -1,4 +1,4 @@
-package org.utm.featurehelper.structure;
+package org.utm.featurehelper.feature;
 
 import java.util.Random;
 

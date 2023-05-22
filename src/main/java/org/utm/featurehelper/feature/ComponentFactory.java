@@ -1,4 +1,4 @@
-package org.utm.featurehelper.structure;
+package org.utm.featurehelper.feature;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import net.minecraft.world.gen.structure.StructureVillagePieces;
 
 public class ComponentFactory {
     
-    private static Map<String, IComponent> factory = new HashMap();
+    private static Map<String, IComponent> factory = new HashMap<String, IComponent>();
     private static List empty = new ArrayList();
 
     static {
