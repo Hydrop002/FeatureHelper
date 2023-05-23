@@ -4,26 +4,15 @@ import net.minecraft.world.gen.feature.WorldGenDungeons;
 import net.minecraft.world.gen.feature.WorldGenLakes;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.Constructor;
+import java.util.*;
 
 public class FeatureFactory {
 
-    private static Map<String, IFeature> factory = new HashMap<String, IFeature>();
+    private static Map<String, Class<? extends WorldGenerator>> factory = new HashMap<String, Class<? extends WorldGenerator>>();
 
     static {
-        factory.put(getName(WorldGenLakes.class), new IFeature() {
-            @Override
-            public WorldGenerator getFeature(Object... args) throws IllegalAccessException, InvocationTargetException, InstantiationException {
-                return (WorldGenerator) WorldGenLakes.class.getDeclaredConstructors()[0].newInstance(args);
-            }
-            @Override
-            public Class<?>[] getParameters() {
-                return WorldGenLakes.class.getDeclaredConstructors()[0].getParameterTypes();
-            }
-        });
+        factory.put(getName(WorldGenLakes.class), WorldGenLakes.class);
     }
 
     public static String getName(Class<? extends WorldGenerator> clazz) {
@@ -34,18 +23,32 @@ public class FeatureFactory {
         return factory.keySet();
     }
 
-    public static Class<?>[] getParameters(String name) {
-        return factory.get(name).getParameters();
+    public static List<Class<?>[]> getParameters(String name) {
+        Constructor<?>[] constructors = factory.get(name).getDeclaredConstructors();
+        List<Class<?>[]> list = new ArrayList<Class<?>[]>();
+        for (Constructor<?> constructor : constructors) {
+            list.add(constructor.getParameterTypes());
+        }
+        return list;
     }
 
     public static WorldGenerator getFeature(String name, Object... args) {
         try {
-            return factory.get(name).getFeature(args);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
+            Constructor<?>[] constructors = factory.get(name).getDeclaredConstructors();
+            for (Constructor<?> constructor : constructors) {
+                Class<?>[] validArgs = constructor.getParameterTypes();
+                boolean valid = true;
+                for (int i = 0; i < validArgs.length; ++i) {
+                    if (!validArgs[i].isAssignableFrom(args[i].getClass())) {
+                        valid = false;
+                        break;
+                    }
+                }
+                if (valid) {
+                    return (WorldGenerator) constructor.newInstance(args);
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
