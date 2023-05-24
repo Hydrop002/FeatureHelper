@@ -31,33 +31,13 @@ public class FeatureFactory {
         return Arrays.toString(classNameList);
     }
 
-    public static List<Class<?>[]> getParaList(String name) {
-        Constructor<?>[] constructors = factory.get(name).getDeclaredConstructors();
-        List<Class<?>[]> list = new ArrayList<Class<?>[]>();
-        for (Constructor<?> constructor : constructors) {
-            list.add(constructor.getParameterTypes());
-        }
-        return list;
+    public static Constructor<?>[] getConstructorList(String name) {
+        return factory.get(name).getDeclaredConstructors();
     }
 
-    public static WorldGenerator getFeature(String name, Object... args) {
+    public static WorldGenerator getFeature(Constructor<?> constructor, Object... args) {
         try {
-            Constructor<?>[] constructors = factory.get(name).getDeclaredConstructors();
-            for (Constructor<?> constructor : constructors) {
-                Class<?>[] validArgs = constructor.getParameterTypes();
-                if (args.length != validArgs.length)
-                    continue;
-                boolean valid = true;
-                for (int i = 0; i < validArgs.length; ++i) {
-                    if (!validArgs[i].isAssignableFrom(args[i].getClass())) {
-                        valid = false;
-                        break;
-                    }
-                }
-                if (valid) {
-                    return (WorldGenerator) constructor.newInstance(args);
-                }
-            }
+            return (WorldGenerator) constructor.newInstance(args);
         } catch (Exception e) {
             e.printStackTrace();
         }

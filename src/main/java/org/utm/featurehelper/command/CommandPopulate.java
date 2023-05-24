@@ -12,6 +12,7 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.common.ChestGenHooks;
 import org.utm.featurehelper.feature.FeatureFactory;
 
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -52,32 +53,42 @@ public class CommandPopulate extends CommandBase {
             throw new CommandException("commands.populate.invalidName");
 
         String[] restArgs = Arrays.copyOfRange(args, 4, args.length);
-        List<Class<?>[]> list = FeatureFactory.getParaList(args[3]);
-        for (Class<?>[] classList : list) {
+        Constructor<?>[] list = FeatureFactory.getConstructorList(args[3]);
+        for (Constructor<?> constructor : list) {
+            Class<?>[] classList = constructor.getParameterTypes();
             if (restArgs.length != classList.length)
                 continue;
             Object[] parsedArgs = new Object[restArgs.length];
-            for (int i = 0; i < classList.length; ++i) {
-                Class<?> clazz = classList[i];
-                if (clazz.equals(Integer.class)) {
-                    parsedArgs[i] = parseInt(sender, restArgs[i]);
-                } else if (clazz.equals(Double.class)) {
-                    parsedArgs[i] = parseDouble(sender, restArgs[i]);
-                } else if (clazz.equals(Boolean.class)) {
-                    parsedArgs[i] = parseBoolean(sender, restArgs[i]);
-                } else if (clazz.equals(Block.class)) {
-                    parsedArgs[i] = Block.blockRegistry.getObject(restArgs[i]);
-                } else if (clazz.equals(WeightedRandomChestContent[].class)) {
-                    parsedArgs[i] = ChestGenHooks.getItems(ChestGenHooks.BONUS_CHEST, rand);
-                } else {
-                    parsedArgs[i] = restArgs[i];
+            try {
+                for (int i = 0; i < classList.length; ++i) {
+                    Class<?> clazz = classList[i];
+                    if (clazz.equals(Integer.class)) {
+                        parsedArgs[i] = parseInt(sender, restArgs[i]);
+                    } else if (clazz.equals(Double.class)) {
+                        parsedArgs[i] = parseDouble(sender, restArgs[i]);
+                    } else if (clazz.equals(Boolean.class)) {
+                        parsedArgs[i] = parseBoolean(sender, restArgs[i]);
+                    } else if (clazz.equals(Block.class)) {
+                        parsedArgs[i] = Block.blockRegistry.getObject(restArgs[i]);
+                    } else if (clazz.equals(WeightedRandomChestContent[].class)) {
+                        parsedArgs[i] = ChestGenHooks.getItems(ChestGenHooks.BONUS_CHEST, rand);
+                    } else {
+                        parsedArgs[i] = restArgs[i];
+                    }
                 }
+            } catch (CommandException e) {
+                continue;
             }
-            WorldGenerator gen = FeatureFactory.getFeature(args[3], parsedArgs);
+            WorldGenerator gen = FeatureFactory.getFeature(constructor, parsedArgs);
             if (gen != null) {
-                gen.generate(world, rand, x, y, z);
+                if (gen.generate(world, rand, x, y, z))
+                    func_152373_a(sender, this, "commands.populate.success");
+                else
+                    func_152373_a(sender, this, "commands.populate.failed");
+                return;
             }
         }
+        func_152373_a(sender, this, "commands.populate.invalidArgs");
     }
 
     @Override
@@ -86,8 +97,9 @@ public class CommandPopulate extends CommandBase {
             return getListOfStringsFromIterableMatchingLastWord(args, FeatureFactory.getNameSet());
         else if (args.length >= 5) {
             if (FeatureFactory.getNameSet().contains(args[3])) {
-                List<Class<?>[]> list = FeatureFactory.getParaList(args[3]);
-                for (Class<?>[] classList : list) {
+                Constructor<?>[] list = FeatureFactory.getConstructorList(args[3]);
+                for (Constructor<?> constructor : list) {
+                    Class<?>[] classList = constructor.getParameterTypes();
                     func_152373_a(sender, this, "commands.populate.args", FeatureFactory.getParaString(classList));
                 }
             }

@@ -23,5 +23,8 @@ commands.cave.continue.success=§4TO BE CONTINUE!
 commands.cave.continue.complete=§4TO BE CONTINUE!
 
 commands.populate.usage=/populate <x> <y> <z> <featureName> [args...]
+commands.populate.success=Populate success.
+commands.populate.failed=Populate failed.
 commands.populate.invalidName=The name of feature is invalid!
+commands.populate.invalidArgs=Invalid args!
 commands.populate.args=Args: %s.
