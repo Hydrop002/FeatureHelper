@@ -23,7 +23,15 @@ public class FeatureFactory {
         return factory.keySet();
     }
 
-    public static List<Class<?>[]> getParameters(String name) {
+    public static String getParaString(Class<?>[] classList) {
+        String[] classNameList = new String[classList.length];
+        for (int i = 0; i < classList.length; ++i) {
+            classNameList[i] = classList[i].getSimpleName();
+        }
+        return Arrays.toString(classNameList);
+    }
+
+    public static List<Class<?>[]> getParaList(String name) {
         Constructor<?>[] constructors = factory.get(name).getDeclaredConstructors();
         List<Class<?>[]> list = new ArrayList<Class<?>[]>();
         for (Constructor<?> constructor : constructors) {
@@ -37,6 +45,8 @@ public class FeatureFactory {
             Constructor<?>[] constructors = factory.get(name).getDeclaredConstructors();
             for (Constructor<?> constructor : constructors) {
                 Class<?>[] validArgs = constructor.getParameterTypes();
+                if (args.length != validArgs.length)
+                    continue;
                 boolean valid = true;
                 for (int i = 0; i < validArgs.length; ++i) {
                     if (!validArgs[i].isAssignableFrom(args[i].getClass())) {
