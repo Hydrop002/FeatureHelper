@@ -59,17 +59,22 @@ public class CommandPopulate extends CommandBase {
             if (restArgs.length != classList.length)
                 continue;
             Object[] parsedArgs = new Object[restArgs.length];
+            boolean invalidBlock = false;
             try {
                 for (int i = 0; i < classList.length; ++i) {
                     Class<?> clazz = classList[i];
-                    if (clazz.equals(Integer.class)) {
+                    if (clazz.equals(int.class)) {
                         parsedArgs[i] = parseInt(sender, restArgs[i]);
-                    } else if (clazz.equals(Double.class)) {
+                    } else if (clazz.equals(double.class)) {
                         parsedArgs[i] = parseDouble(sender, restArgs[i]);
-                    } else if (clazz.equals(Boolean.class)) {
+                    } else if (clazz.equals(boolean.class)) {
                         parsedArgs[i] = parseBoolean(sender, restArgs[i]);
                     } else if (clazz.equals(Block.class)) {
-                        parsedArgs[i] = Block.blockRegistry.getObject(restArgs[i]);
+                        Block block = Block.getBlockFromName(restArgs[i]);
+                        if (block == null)
+                            invalidBlock = true;
+                        else
+                            parsedArgs[i] = block;
                     } else if (clazz.equals(WeightedRandomChestContent[].class)) {
                         parsedArgs[i] = ChestGenHooks.getItems(ChestGenHooks.BONUS_CHEST, rand);
                     } else {
@@ -79,12 +84,15 @@ public class CommandPopulate extends CommandBase {
             } catch (CommandException e) {
                 continue;
             }
+            if (invalidBlock)
+                throw new CommandException("commands.populate.invalidBlock");
             WorldGenerator gen = FeatureFactory.getFeature(constructor, parsedArgs);
             if (gen != null) {
-                if (gen.generate(world, rand, x, y, z))
+                if (gen.generate(world, rand, x, y, z)) {
                     func_152373_a(sender, this, "commands.populate.success");
-                else
+                } else {
                     func_152373_a(sender, this, "commands.populate.failed");
+                }
                 return;
             }
         }
