@@ -16,7 +16,9 @@ commands.structure.bb.usage=/structure bb clear
 commands.structure.bb.clear.success=Clear all bounding boxes.
 
 commands.cave.usage=/cave <start|continue>
-commands.cave.start.usage=/cave start <x> <y> <z> [yaw] [pitch] [radius] [length] [isRoom] [branches]
+commands.cave.start.usage=/cave start <x> <y> <z> <tunnel|room>
+commands.cave.start.tunnel.usage=/cave start <x> <y> <z> tunnel [yaw] [pitch] [radius] [length] [debug]
+commands.cave.start.room.usage=/cave start <x> <y> <z> room [radius]
 commands.cave.start.success=§4TO BE CONTINUE!
 commands.cave.continue.usage=/cave continue
 commands.cave.continue.success=§4TO BE CONTINUE!

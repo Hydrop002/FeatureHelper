@@ -11,6 +11,7 @@ public class FeatureFactory {
     private static Map<String, Class<? extends WorldGenerator>> factory = new HashMap<String, Class<? extends WorldGenerator>>();
 
     static {
+        factory.put("BonusChest", WorldGeneratorBonusChest.class);
         factory.put(getName(WorldGenLakes.class), WorldGenLakes.class);
         factory.put(getName(WorldGenDungeons.class), WorldGenDungeons.class);
         factory.put(getName(WorldGenBigTree.class), WorldGenBigTree.class);
@@ -31,7 +32,6 @@ public class FeatureFactory {
         factory.put(getName(WorldGenDeadBush.class), WorldGenDeadBush.class);
         factory.put(getName(WorldGenDesertWells.class), WorldGenDesertWells.class);
         factory.put(getName(WorldGenDoublePlant.class), WorldGenDoublePlant.class);
-        factory.put("BonusChest", WorldGeneratorBonusChest.class);
         factory.put(getName(WorldGenFire.class), WorldGenFire.class);
         factory.put(getName(WorldGenFlowers.class), WorldGenFlowers.class);
         factory.put(getName(WorldGenGlowStone1.class), WorldGenGlowStone1.class);
