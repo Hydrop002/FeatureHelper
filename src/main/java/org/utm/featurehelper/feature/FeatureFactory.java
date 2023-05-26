@@ -1,6 +1,7 @@
 package org.utm.featurehelper.feature;
 
 import net.minecraft.world.gen.feature.*;
+import org.utm.featurehelper.feature.patch.BlockBlobPatcher;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
@@ -24,7 +25,7 @@ public class FeatureFactory {
         factory.put(getName(WorldGenTrees.class), WorldGenTrees.class);
         factory.put(getName(WorldGenShrub.class), WorldGenShrub.class);
         factory.put(getName(WorldGenBigMushroom.class), WorldGenBigMushroom.class);
-        //factory.put(getName(WorldGenBlockBlob.class), WorldGenBlockBlob.class);
+        factory.put(getName(WorldGenBlockBlob.class), BlockBlobPatcher.class);  // re-render
         factory.put(getName(WorldGenCactus.class), WorldGenCactus.class);
         factory.put(getName(WorldGenClay.class), WorldGenClay.class);
         factory.put(getName(WorldGenDeadBush.class), WorldGenDeadBush.class);
