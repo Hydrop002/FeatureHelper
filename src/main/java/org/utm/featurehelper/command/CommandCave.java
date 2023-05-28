@@ -11,8 +11,6 @@ import java.util.Random;
 
 public class CommandCave extends CommandBase {
 
-    private CavesPatcher generator = new CavesPatcher();
-
     @Override
     public String getCommandName() {
         return "cave";
@@ -66,7 +64,7 @@ public class CommandCave extends CommandBase {
                 } else {
                     radius = 1 + rand.nextFloat() * 6;
                 }
-                this.generator.generate(0, 0, x, y, z, radius, 0, 0, -1, 0, 0.5);
+                new CavesPatcher().generate(x, y, z, radius, 0, 0, -1, 0, 0.5, false);
 
             } else if (args[4].equals("tunnel")) {
 
@@ -98,7 +96,7 @@ public class CommandCave extends CommandBase {
                         }
                     }
                 }
-                this.generator.generate(0, 0, x, y, z, radius, yaw, pitch, 0, length, 1);
+                new CavesPatcher().generate(x, y, z, radius, yaw, pitch, 0, length, 1, debug);
 
             } else {
                 throw new WrongUsageException("commands.cave.start.usage");
