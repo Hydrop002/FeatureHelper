@@ -4,6 +4,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import org.utm.featurehelper.feature.patch.CavesPatcher;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class CommandCave extends CommandBase {
         if (args.length == 0)
             throw new WrongUsageException("commands.cave.usage");
 
+        World world = sender.getEntityWorld();
         Random rand = new Random();
 
         if (args[0].equals("start")) {
@@ -55,6 +57,7 @@ public class CommandCave extends CommandBase {
             y = func_110666_a(sender, y, args[2]);
             z = func_110666_a(sender, z, args[3]);
 
+            CavesPatcher.removeAll();
 
             if (args[4].equals("room")) {
 
@@ -64,7 +67,7 @@ public class CommandCave extends CommandBase {
                 } else {
                     radius = 1 + rand.nextFloat() * 6;
                 }
-                new CavesPatcher().generate(x, y, z, radius, 0, 0, -1, 0, 0.5, false);
+                new CavesPatcher().generate(world, x, y, z, radius, 0, 0, -1, 0, 0.5, false);
 
             } else if (args[4].equals("tunnel")) {
 
@@ -77,11 +80,13 @@ public class CommandCave extends CommandBase {
                     if (!args[5].equals("*")) {  // useDefault
                         yaw = sender instanceof EntityPlayer ? ((EntityPlayer) sender).rotationYaw : 0;
                         yaw = (float) func_110666_a(sender, yaw, args[5]);
+                        yaw = (yaw + 90F) * (float) Math.PI / 180F;
                     }
                     if (args.length >= 7) {
                         if (!args[6].equals("*")) {
                             pitch = sender instanceof EntityPlayer ? ((EntityPlayer) sender).rotationPitch : 0;
                             pitch = (float) func_110666_a(sender, pitch, args[6]);
+                            pitch = -pitch * (float) Math.PI / 180F;
                         }
                         if (args.length >= 8) {
                             if (!args[7].equals("*")) {
@@ -96,18 +101,24 @@ public class CommandCave extends CommandBase {
                         }
                     }
                 }
-                new CavesPatcher().generate(x, y, z, radius, yaw, pitch, 0, length, 1, debug);
+                new CavesPatcher().generate(world, x, y, z, radius, yaw, pitch, 0, length, 1, debug);
 
             } else {
                 throw new WrongUsageException("commands.cave.start.usage");
             }
 
-            func_152373_a(sender, this, "commands.cave.start.success");
+            func_152373_a(sender, this, "commands.cave.start.success", x, y, z);
 
         } else if (args[0].equals("continue")) {
 
-            // TODO: continue
-            func_152373_a(sender, this, "commands.cave.continue.success");
+            CavesPatcher current = CavesPatcher.getCurrent();
+            if (current != null) {
+                current.addRoom();
+                double[] pos = current.getPos();
+                func_152373_a(sender, this, "commands.cave.continue.success", pos[0], pos[1], pos[2]);
+            } else {
+                func_152373_a(sender, this, "commands.cave.continue.complete");
+            }
 
         } else {
             throw new WrongUsageException("commands.cave.continue.usage");
@@ -120,12 +131,21 @@ public class CommandCave extends CommandBase {
             return getListOfStringsMatchingLastWord(args, new String[] {"start", "continue"});
         else if (args.length == 5)
             return getListOfStringsMatchingLastWord(args, new String[] {"tunnel", "room"});
-        else if (args.length == 11)
-            if (args[4].equals("tunnel"))
+        else if (args.length == 10)
+            if (args[0].equals("start") && args[4].equals("tunnel"))
                 return getListOfStringsMatchingLastWord(args, new String[] {"false", "true"});
             else
                 return null;
-        else
+        else if (args.length >= 6) {
+            if (args[0].equals("start")) {
+                if (args[4].equals("room")) {
+                    func_152373_a(sender, this, "commands.cave.start.room.usage");
+                } else if (args[4].equals("tunnel")) {
+                    func_152373_a(sender, this, "commands.cave.start.tunnel.usage");
+                }
+            }
+            return null;
+        } else
             return null;
     }
 

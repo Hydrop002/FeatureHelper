@@ -74,6 +74,8 @@ public class CommandStructure extends CommandBase {
                         this.addBoundingBox(null);
                     func_152373_a(sender, this, "commands.structure.continue.complete");
                 }
+            } else {
+                func_152373_a(sender, this, "commands.structure.continue.complete");
             }
 
         } else if (args[0].equals("start")) {
@@ -188,6 +190,9 @@ public class CommandStructure extends CommandBase {
                 component.addComponentParts(world, rand, newBB);
                 this.setLastBoundingBox(bb);
                 func_152373_a(sender, this, "commands.structure.component.success", bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
+
+            } else {
+                func_152373_a(sender, this, "commands.structure.component.empty");
             }
 
         } else if (args[0].equals("bb")) {

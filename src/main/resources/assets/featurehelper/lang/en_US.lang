@@ -12,6 +12,7 @@ commands.structure.component.success=Place structure component at (%d,%d,%d) to 
 commands.structure.component.invalidName=The name of structure component is invalid!
 commands.structure.component.invalidTag=Not a valid tag!
 commands.structure.component.tagError=Data tag parsing failed: %s.
+commands.structure.component.empty=This structure component is empty!
 commands.structure.bb.usage=/structure bb clear
 commands.structure.bb.clear.success=Clear all bounding boxes.
 
@@ -19,10 +20,10 @@ commands.cave.usage=/cave <start|continue>
 commands.cave.start.usage=/cave start <x> <y> <z> <tunnel|room>
 commands.cave.start.tunnel.usage=/cave start <x> <y> <z> tunnel [yaw] [pitch] [radius] [length] [debug]
 commands.cave.start.room.usage=/cave start <x> <y> <z> room [radius]
-commands.cave.start.success=§4TO BE CONTINUE!
+commands.cave.start.success=Start cave at (%f,%f,%f).
 commands.cave.continue.usage=/cave continue
-commands.cave.continue.success=§4TO BE CONTINUE!
-commands.cave.continue.complete=§4TO BE CONTINUE!
+commands.cave.continue.success=Continue to generate caves at (%f,%f,%f).
+commands.cave.continue.complete=No more caves can generate.
 
 commands.populate.usage=/populate <x> <y> <z> <featureName> [args...]
 commands.populate.success=Populate success.
