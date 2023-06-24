@@ -1,0 +1,16 @@
+[
+{
+  "modid": "featurehelper",
+  "name": "Feature Helper",
+  "description": "...",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Hydrop002"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
