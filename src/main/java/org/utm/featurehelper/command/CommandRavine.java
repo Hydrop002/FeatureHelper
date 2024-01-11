@@ -5,22 +5,22 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import org.utm.featurehelper.feature.patch.CavesHellPatcher;
+import org.utm.featurehelper.feature.patch.RavinePatcher;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class CommandCaveHell extends CommandBase {
+public class CommandRavine extends CommandBase {
 
     @Override
     public String getCommandName() {
-        return "cavehell";
+        return "ravine";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "commands.cavehell.usage";
+        return "commands.ravine.usage";
     }
 
     @Override
@@ -31,7 +31,7 @@ public class CommandCaveHell extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
         if (args.length == 0)
-            throw new WrongUsageException("commands.cavehell.usage");
+            throw new WrongUsageException("commands.ravine.usage");
 
         World world = sender.getEntityWorld();
         Random rand = new Random();
@@ -39,7 +39,7 @@ public class CommandCaveHell extends CommandBase {
         if (args[0].equals("start")) {
 
             if (args.length < 5)
-                throw new WrongUsageException("commands.cavehell.start.usage");
+                throw new WrongUsageException("commands.ravine.start.usage");
 
             double x;
             double y;
@@ -58,23 +58,13 @@ public class CommandCaveHell extends CommandBase {
             y = func_110666_a(sender, y, args[2]);
             z = func_110666_a(sender, z, args[3]);
 
-            CavesHellPatcher.removeAll();
+            RavinePatcher.removeAll();
 
-            if (args[4].equals("room")) {
-
-                float radius;
-                if (args.length >= 6) {
-                    radius = (float) parseDouble(sender, args[5]);
-                } else {
-                    radius = 1 + rand.nextFloat() * 6;
-                }
-                new CavesHellPatcher().generate(world, x, y, z, radius, 0, 0, -1, 0, 0.5, false);
-
-            } else if (args[4].equals("tunnel")) {
+            if (args[4].equals("tunnel")) {
 
                 float yaw = rand.nextFloat() * (float) Math.PI * 2F;
                 float pitch = (rand.nextFloat() - 0.5F) / 4F;
-                float radius = rand.nextFloat() * 2F + rand.nextFloat();
+                float radius = (rand.nextFloat() * 2.0F + rand.nextFloat()) * 2.0F;
                 int length = 0;
                 boolean debug = false;
                 if (args.length >= 6) {
@@ -96,38 +86,38 @@ public class CommandCaveHell extends CommandBase {
                         }
                     }
                 }
-                new CavesHellPatcher().generate(world, x, y, z, radius * 2.0F, yaw, pitch, 0, length, 0.5, debug);
+                new RavinePatcher().generate(world, x, y, z, radius, yaw, pitch, 0, length, 3, debug);
 
             } else {
-                throw new WrongUsageException("commands.cavehell.start.usage");
+                throw new WrongUsageException("commands.ravine.start.usage");
             }
 
-            func_152373_a(sender, this, "commands.cavehell.start.success", x, y, z);
+            func_152373_a(sender, this, "commands.ravine.start.success", x, y, z);
 
         } else if (args[0].equals("continue")) {
 
-            CavesHellPatcher current = CavesHellPatcher.getCurrent();
+            RavinePatcher current = RavinePatcher.getCurrent();
             if (current != null) {
                 current.addRoom();
                 double[] pos = current.getPos();
-                func_152373_a(sender, this, "commands.cavehell.continue.success", pos[0], pos[1], pos[2]);
+                func_152373_a(sender, this, "commands.ravine.continue.success", pos[0], pos[1], pos[2]);
             } else {
-                func_152373_a(sender, this, "commands.cavehell.continue.complete");
+                func_152373_a(sender, this, "commands.ravine.continue.complete");
             }
 
         } else if (args[0].equals("trail")) {
 
             if (args.length == 1)
-                throw new WrongUsageException("commands.cavehell.trail.usage");
+                throw new WrongUsageException("commands.ravine.trail.usage");
             if (args[1].equals("clear")) {
-                CavesHellPatcher.removeAll();
-                func_152373_a(sender, this, "commands.cavehell.trail.clear.success");
+                RavinePatcher.removeAll();
+                func_152373_a(sender, this, "commands.ravine.trail.clear.success");
             } else {
-                throw new WrongUsageException("commands.cavehell.trail.usage");
+                throw new WrongUsageException("commands.ravine.trail.usage");
             }
 
         } else {
-            throw new WrongUsageException("commands.cavehell.usage");
+            throw new WrongUsageException("commands.ravine.usage");
         }
     }
 
@@ -141,19 +131,11 @@ public class CommandCaveHell extends CommandBase {
             else
                 return null;
         else if (args.length == 5) {
-            List list = getListOfStringsMatchingLastWord(args, new String[]{"tunnel", "room"});
-            if (list.contains("tunnel"))
-                func_152373_a(sender, this, "commands.cavehell.start.tunnel.usage");
-            if (list.contains("room"))
-                func_152373_a(sender, this, "commands.cavehell.start.room.usage");
-            return list;
+            func_152373_a(sender, this, "commands.ravine.start.usage");
+            return getListOfStringsMatchingLastWord(args, new String[]{"tunnel"});
         } else if (args.length == 6) {
             if (args[0].equals("start")) {
-                if (args[4].equals("room")) {
-                    Random rand = new Random();
-                    float radius = 1 + rand.nextFloat() * 6;
-                    return Arrays.asList(String.valueOf(radius));
-                } else if (args[4].equals("tunnel")) {
+                if (args[4].equals("tunnel")) {
                     Random rand = new Random();
                     float yaw = rand.nextFloat() * 360;
                     return Arrays.asList(String.valueOf(yaw));
@@ -173,7 +155,7 @@ public class CommandCaveHell extends CommandBase {
             if (args[0].equals("start")) {
                 if (args[4].equals("tunnel")) {
                     Random rand = new Random();
-                    float radius = rand.nextFloat() * 2F + rand.nextFloat();
+                    float radius = (rand.nextFloat() * 2.0F + rand.nextFloat()) * 2.0F;
                     return Arrays.asList(String.valueOf(radius));
                 }
             }

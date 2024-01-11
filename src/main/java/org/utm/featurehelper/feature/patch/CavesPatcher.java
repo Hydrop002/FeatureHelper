@@ -88,14 +88,14 @@ public class CavesPatcher extends MapGenCaves {
         this.y += sinPitch;
         this.z += MathHelper.sin(this.yaw) * cosPitch;
         if (this.steep) {
-            this.pitch *= 0.92;
+            this.pitch *= 0.92F;
         } else {
-            this.pitch *= 0.7;
+            this.pitch *= 0.7F;
         }
-        this.pitch += this.pitchDiff * 0.1;
-        this.yaw += this.yawDiff * 0.1;
-        this.pitchDiff *= 0.9;
-        this.yawDiff *= 0.75;
+        this.pitch += this.pitchDiff * 0.1F;
+        this.yaw += this.yawDiff * 0.1F;
+        this.pitchDiff *= 0.9F;
+        this.yawDiff *= 0.75F;
         this.pitchDiff += (this.rand.nextFloat() - this.rand.nextFloat()) * this.rand.nextFloat() * 2;
         this.yawDiff += (this.rand.nextFloat() - this.rand.nextFloat()) * this.rand.nextFloat() * 4;
         if (!this.isRoom && this.index == this.fork && this.radius > 1 && this.length > 0) {

@@ -5,6 +5,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import org.utm.featurehelper.command.CommandStructure;
 import org.utm.featurehelper.feature.patch.CavesHellPatcher;
 import org.utm.featurehelper.feature.patch.CavesPatcher;
+import org.utm.featurehelper.feature.patch.RavinePatcher;
 import org.utm.featurehelper.render.RenderBoundingBox;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -14,6 +15,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.utm.featurehelper.render.RenderCaveHellTrail;
 import org.utm.featurehelper.render.RenderCaveTrail;
+import org.utm.featurehelper.render.RenderRavineTrail;
 
 public class EventListener {
     
@@ -26,6 +28,7 @@ public class EventListener {
         RenderBoundingBox.instance.renderList(entity, event.partialTicks);
         RenderCaveTrail.instance.renderList(entity, event.partialTicks);
         RenderCaveHellTrail.instance.renderList(entity, event.partialTicks);
+        RenderRavineTrail.instance.renderList(entity, event.partialTicks);
     }
 
     @SubscribeEvent
@@ -36,6 +39,7 @@ public class EventListener {
             command.sendMessageToPlayer(player);
             CavesPatcher.sendMessageToPlayer(player);
             CavesHellPatcher.sendMessageToPlayer(player);
+            RavinePatcher.sendMessageToPlayer(player);
         }
     }
 

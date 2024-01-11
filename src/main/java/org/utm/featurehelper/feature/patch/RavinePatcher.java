@@ -7,14 +7,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.MapGenCavesHell;
-import org.utm.featurehelper.network.MessageCaveHellTrail;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.gen.MapGenRavine;
+import org.utm.featurehelper.network.MessageRavineTrail;
 import org.utm.featurehelper.network.NetworkManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CavesHellPatcher extends MapGenCavesHell {
+public class RavinePatcher extends MapGenRavine {
+
+    private float[] randomSequence = new float[1024];
 
     private World worldObj;
     private double x;
@@ -31,10 +34,8 @@ public class CavesHellPatcher extends MapGenCavesHell {
     private float yawDiff;
     private float pitchDiff;
     private boolean isRoom;
-    private int fork;
-    private boolean steep;
 
-    private static List<CavesHellPatcher> list = new ArrayList<CavesHellPatcher>();
+    private static List<RavinePatcher> list = new ArrayList<RavinePatcher>();
     private static List<List<double[]>> posList = new ArrayList<List<double[]>>();
 
     public void generate(World world, double x, double y, double z, float radius, float yaw, float pitch, int index, int length, double heightFactor, boolean debug) {
@@ -61,8 +62,13 @@ public class CavesHellPatcher extends MapGenCavesHell {
             this.index = this.length / 2;
             this.isRoom = true;
         }
-        this.fork = this.rand.nextInt(this.length / 2) + this.length / 4;
-        this.steep = this.rand.nextInt(6) == 0;
+        float r = 1.0F;
+        for (int i = 0; i < 256; ++i) {
+            if (i == 0 || this.rand.nextInt(3) == 0) {
+                r = 1.0F + this.rand.nextFloat() * this.rand.nextFloat();
+            }
+            this.randomSequence[i] = r * r;
+        }
 
         if (this.debug) {
             list.add(this);
@@ -81,31 +87,20 @@ public class CavesHellPatcher extends MapGenCavesHell {
     public boolean addRoom() {
         double horRadius = 1.5 + MathHelper.sin(this.index * (float) Math.PI / this.length) * this.radius;
         double verRadius = horRadius * this.heightFactor;
+        horRadius *= this.rand.nextFloat() * 0.25 + 0.75;
+        verRadius *= this.rand.nextFloat() * 0.25 + 0.75;
         float cosPitch = MathHelper.cos(this.pitch);
         float sinPitch = MathHelper.sin(this.pitch);
         this.x += MathHelper.cos(this.yaw) * cosPitch;
         this.y += sinPitch;
         this.z += MathHelper.sin(this.yaw) * cosPitch;
-        if (this.steep) {
-            this.pitch *= 0.92F;
-        } else {
-            this.pitch *= 0.7F;
-        }
-        this.pitch += this.pitchDiff * 0.1F;
-        this.yaw += this.yawDiff * 0.1F;
-        this.pitchDiff *= 0.9F;
-        this.yawDiff *= 0.75F;
+        this.pitch *= 0.7F;
+        this.pitch += this.pitchDiff * 0.05F;
+        this.yaw += this.yawDiff * 0.05F;
+        this.pitchDiff *= 0.8F;
+        this.yawDiff *= 0.5F;
         this.pitchDiff += (this.rand.nextFloat() - this.rand.nextFloat()) * this.rand.nextFloat() * 2;
         this.yawDiff += (this.rand.nextFloat() - this.rand.nextFloat()) * this.rand.nextFloat() * 4;
-        if (!this.isRoom && this.index == this.fork && this.radius > 1) {
-            if (this.debug) {
-                list.remove(list.size() - 1);
-                this.addPos(null);
-            }
-            new CavesHellPatcher().generate(this.worldObj, this.x, this.y, this.z, this.rand.nextFloat() * 0.5F + 0.5F, this.yaw - (float) Math.PI / 2F, this.pitch / 3F, this.index, this.length, 1, this.debug);
-            new CavesHellPatcher().generate(this.worldObj, this.x, this.y, this.z, this.rand.nextFloat() * 0.5F + 0.5F, this.yaw + (float) Math.PI / 2F, this.pitch / 3F, this.index, this.length, 1, this.debug);
-            return false;
-        }
         if (this.isRoom || this.rand.nextInt(4) != 0) {
             int minX = MathHelper.floor_double(this.x - horRadius) - 1;
             int maxX = MathHelper.floor_double(this.x + horRadius) + 1;
@@ -113,38 +108,54 @@ public class CavesHellPatcher extends MapGenCavesHell {
             int maxY = MathHelper.floor_double(this.y + verRadius) + 1;
             int minZ = MathHelper.floor_double(this.z - horRadius) - 1;
             int maxZ = MathHelper.floor_double(this.z + horRadius) + 1;
-            boolean foundLava = false;
-            for (int i = minX; !foundLava && i < maxX; ++i) {
-                for (int k = minZ; !foundLava && k < maxZ; ++k) {
-                    for (int j = maxY + 1; !foundLava && j >= minY - 1; --j) {
-                        if (j >= 0 && j < 128) {
+            boolean foundWater = false;
+            for (int i = minX; !foundWater && i < maxX; ++i) {
+                for (int k = minZ; !foundWater && k < maxZ; ++k) {
+                    for (int j = maxY + 1; !foundWater && j >= minY - 1; --j) {
+                        if (j >= 0 && j < 256) {
                             Block block = this.worldObj.getBlock(i, j, k);
-                            if (block == Blocks.flowing_lava || block == Blocks.lava)
-                                foundLava = true;
+                            if (block == Blocks.flowing_water || block == Blocks.water)
+                                foundWater = true;
                             if (j != minY - 1 && i != minX && i != maxX - 1 && k != minZ && k != maxZ - 1)
                                 j = minY;
                         }
                     }
                 }
             }
-            if (!foundLava) {
+            if (!foundWater) {
                 for(int i = minX; i < maxX; ++i) {
                     double offsetRatioX = (i + 0.5 - this.x) / horRadius;
                     for (int k = minZ; k < maxZ; ++k) {
                         double offsetRatioZ = (k + 0.5 - this.z) / horRadius;
-                        for (int j = maxY - 1; j >= minY; --j) {
-                            double offsetRatioY = (j + 0.5 - this.y) / verRadius;
-                            if (offsetRatioY > -0.7 && offsetRatioX * offsetRatioX + offsetRatioY * offsetRatioY + offsetRatioZ * offsetRatioZ < 1) {
-                                Block block = this.worldObj.getBlock(i, j + 1, k);
-                                if (block == Blocks.netherrack || block == Blocks.dirt || block == Blocks.grass) {
-                                    this.worldObj.setBlock(i, j + 1, k, Blocks.air, 0, 2);
+                        boolean foundTop = false;
+                        if (offsetRatioX * offsetRatioX + offsetRatioZ * offsetRatioZ < 1) {
+                            for (int j = maxY - 1; j >= minY; --j) {
+                                double offsetRatioY = (j + 0.5 - this.y) / verRadius;
+                                if ((offsetRatioX * offsetRatioX + offsetRatioZ * offsetRatioZ) * this.randomSequence[j] + offsetRatioY * offsetRatioY / 6 < 1) {
+                                    Block block = this.worldObj.getBlock(i, j + 1, k);
+                                    BiomeGenBase biome = this.worldObj.getBiomeGenForCoords(i, k);
+                                    Block topBlock = this.isExceptionBiome(biome) ? Blocks.grass : biome.topBlock;
+                                    Block fillerBlock = this.isExceptionBiome(biome) ? Blocks.dirt : biome.fillerBlock;
+                                    if (block == topBlock) {
+                                        foundTop = true;
+                                    }
+                                    if (block == Blocks.stone || block == fillerBlock || block == topBlock) {
+                                        if (j < 10) {
+                                            this.worldObj.setBlock(i, j + 1, k, Blocks.flowing_lava, 0, 2);
+                                        } else {
+                                            this.worldObj.setBlock(i, j + 1, k, Blocks.air, 0, 2);
+                                            if (foundTop && this.worldObj.getBlock(i, j, k) == fillerBlock) {
+                                                this.worldObj.setBlock(i, j, k, topBlock, 0, 2);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-                if (this.isRoom) {
-                    if (this.debug) {  // unreachable
+                if (this.isRoom) {  // unreachable
+                    if (this.debug) {
                         list.remove(list.size() - 1);
                         this.addPos(this.getPos());
                         this.addPos(null);
@@ -166,11 +177,18 @@ public class CavesHellPatcher extends MapGenCavesHell {
         return true;
     }
 
+    private boolean isExceptionBiome(BiomeGenBase biome) {
+        if (biome == BiomeGenBase.mushroomIsland) return true;
+        if (biome == BiomeGenBase.beach) return true;
+        if (biome == BiomeGenBase.desert) return true;
+        return false;
+    }
+
     public double[] getPos() {
         return new double[] {this.x, this.y, this.z};
     }
 
-    public static CavesHellPatcher getCurrent() {
+    public static RavinePatcher getCurrent() {
         if (!list.isEmpty())
             return list.get(list.size() - 1);
         else
@@ -212,7 +230,7 @@ public class CavesHellPatcher extends MapGenCavesHell {
             listTag.setTag("PosList", subList);
             list.appendTag(listTag);
         }
-        MessageCaveHellTrail message = new MessageCaveHellTrail();
+        MessageRavineTrail message = new MessageRavineTrail();
         message.pos = new NBTTagCompound();
         message.pos.setTag("TunnelList", list);
         NetworkManager.instance.sendToAll(message);
@@ -237,7 +255,7 @@ public class CavesHellPatcher extends MapGenCavesHell {
             listTag.setTag("PosList", subList);
             list.appendTag(listTag);
         }
-        MessageCaveHellTrail message = new MessageCaveHellTrail();
+        MessageRavineTrail message = new MessageRavineTrail();
         message.pos = new NBTTagCompound();
         message.pos.setTag("TunnelList", list);
         NetworkManager.instance.sendTo(message, player);
