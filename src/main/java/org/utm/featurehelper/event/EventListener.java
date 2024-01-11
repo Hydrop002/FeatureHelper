@@ -13,9 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import org.utm.featurehelper.render.RenderCaveHellTrail;
-import org.utm.featurehelper.render.RenderCaveTrail;
-import org.utm.featurehelper.render.RenderRavineTrail;
+import org.utm.featurehelper.render.RenderTrail;
 
 public class EventListener {
     
@@ -26,9 +24,9 @@ public class EventListener {
         EntityLivingBase entity = Minecraft.getMinecraft().renderViewEntity;
         RenderBoundingBox.instance.render(entity, event.partialTicks);
         RenderBoundingBox.instance.renderList(entity, event.partialTicks);
-        RenderCaveTrail.instance.renderList(entity, event.partialTicks);
-        RenderCaveHellTrail.instance.renderList(entity, event.partialTicks);
-        RenderRavineTrail.instance.renderList(entity, event.partialTicks);
+        RenderTrail.caveRenderer.renderList(entity, event.partialTicks);
+        RenderTrail.caveHellRenderer.renderList(entity, event.partialTicks);
+        RenderTrail.ravineRenderer.renderList(entity, event.partialTicks);
     }
 
     @SubscribeEvent

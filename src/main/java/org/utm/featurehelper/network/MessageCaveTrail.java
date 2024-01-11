@@ -7,7 +7,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import org.utm.featurehelper.render.RenderCaveTrail;
+import org.utm.featurehelper.render.RenderTrail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class MessageCaveTrail implements IMessage {
         @Override
         public IMessage onMessage(MessageCaveTrail message, MessageContext ctx) {
             NBTTagList list = message.pos.getTagList("TunnelList", 10);
-            RenderCaveTrail.instance.posList = new ArrayList<List<double[]>>();
+            RenderTrail.caveRenderer.posList = new ArrayList<List<double[]>>();
             for (int i = 0; i < list.tagCount(); ++i) {
                 NBTTagCompound listTag = list.getCompoundTagAt(i);
                 NBTTagList subList = listTag.getTagList("PosList", 10);
@@ -47,7 +47,7 @@ public class MessageCaveTrail implements IMessage {
                                 posTag.getDouble("z"),
                         });
                 }
-                RenderCaveTrail.instance.posList.add(tunnel);
+                RenderTrail.caveRenderer.posList.add(tunnel);
             }
             return null;
         }

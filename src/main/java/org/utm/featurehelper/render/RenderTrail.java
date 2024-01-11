@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class RenderCaveHellTrail {
+public class RenderTrail {
 
-    public static RenderCaveHellTrail instance = new RenderCaveHellTrail();
+    public static RenderTrail caveRenderer = new RenderTrail();
+    public static RenderTrail caveHellRenderer = new RenderTrail();
+    public static RenderTrail ravineRenderer = new RenderTrail();
 
     public Frustrum frustrum = new Frustrum();
 
