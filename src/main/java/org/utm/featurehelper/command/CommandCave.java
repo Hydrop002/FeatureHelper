@@ -117,6 +117,17 @@ public class CommandCave extends CommandBase {
                 func_152373_a(sender, this, "commands.cave.continue.complete");
             }
 
+        } else if (args[0].equals("trail")) {
+
+            if (args.length == 1)
+                throw new WrongUsageException("commands.cave.trail.usage");
+            if (args[1].equals("clear")) {
+                CavesPatcher.removeAll();
+                func_152373_a(sender, this, "commands.cave.trail.clear.success");
+            } else {
+                throw new WrongUsageException("commands.cave.trail.usage");
+            }
+
         } else {
             throw new WrongUsageException("commands.cave.usage");
         }
@@ -125,7 +136,12 @@ public class CommandCave extends CommandBase {
     @Override
     public List addTabCompletionOptions(ICommandSender sender, String[] args) {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, new String[] {"start", "continue"});
+            return getListOfStringsMatchingLastWord(args, new String[] {"start", "continue", "trail"});
+        else if (args.length == 2)
+            if (args[0].equals("trail"))
+                return getListOfStringsMatchingLastWord(args, new String[] {"clear"});
+            else
+                return null;
         else if (args.length == 5) {
             List list = getListOfStringsMatchingLastWord(args, new String[]{"tunnel", "room"});
             if (list.contains("tunnel"))

@@ -24,6 +24,8 @@ commands.cave.start.success=Start cave at (%f,%f,%f).
 commands.cave.continue.usage=/cave continue
 commands.cave.continue.success=Continue to generate caves at (%f,%f,%f).
 commands.cave.continue.complete=No more caves can generate.
+commands.cave.trail.usage=/cave trail clear
+commands.cave.trail.clear.success=Clear all trails and stop generate.
 
 commands.populate.usage=/populate <x> <y> <z> <featureName> [args...]
 commands.populate.success=Populate success.

@@ -8,12 +8,14 @@ import org.utm.featurehelper.command.CommandStructure;
 
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import org.utm.featurehelper.network.MessageBoundingBox;
+import org.utm.featurehelper.network.MessageDigPos;
 import org.utm.featurehelper.network.NetworkManager;
 
 public class CommonProxy {
 
     public void preInit(FMLPreInitializationEvent event) {
         NetworkManager.instance.registerMessage(MessageBoundingBox.handler, MessageBoundingBox.class, 0, Side.CLIENT);
+        NetworkManager.instance.registerMessage(MessageDigPos.handler, MessageDigPos.class, 1, Side.CLIENT);
     }
 
     public void serverStarting(FMLServerStartingEvent event) {

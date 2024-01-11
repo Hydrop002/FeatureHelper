@@ -23,7 +23,7 @@ public class MessageBoundingBox implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeTag(buf, bb);
+        ByteBufUtils.writeTag(buf, this.bb);
     }
 
     public static IMessageHandler<MessageBoundingBox, IMessage> handler = new IMessageHandler<MessageBoundingBox, IMessage>() {

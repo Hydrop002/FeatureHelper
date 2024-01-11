@@ -1,11 +1,16 @@
 package org.utm.featurehelper.feature.patch;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.MapGenCaves;
+import org.utm.featurehelper.network.MessageDigPos;
+import org.utm.featurehelper.network.NetworkManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +36,7 @@ public class CavesPatcher extends MapGenCaves {
     private boolean steep;
 
     private static List<CavesPatcher> list = new ArrayList<CavesPatcher>();
+    private static List<List<double[]>> posList = new ArrayList<List<double[]>>();
 
     public void generate(World world, double x, double y, double z, float radius, float yaw, float pitch, int index, int length, double heightFactor, boolean debug) {
         this.worldObj = world;
@@ -61,6 +67,9 @@ public class CavesPatcher extends MapGenCaves {
 
         if (this.debug) {
             list.add(this);
+            List<double[]> subList = new ArrayList<double[]>();
+            subList.add(this.getPos());
+            posList.add(subList);
             this.addRoom();
             return;
         }
@@ -90,8 +99,10 @@ public class CavesPatcher extends MapGenCaves {
         this.pitchDiff += (this.rand.nextFloat() - this.rand.nextFloat()) * this.rand.nextFloat() * 2;
         this.yawDiff += (this.rand.nextFloat() - this.rand.nextFloat()) * this.rand.nextFloat() * 4;
         if (!this.isRoom && this.index == this.fork && this.radius > 1 && this.length > 0) {
-            if (this.debug)
+            if (this.debug) {
                 list.remove(list.size() - 1);
+                this.addPos(null);
+            }
             new CavesPatcher().generate(this.worldObj, this.x, this.y, this.z, this.rand.nextFloat() * 0.5F + 0.5F, this.yaw - (float) Math.PI / 2F, this.pitch / 3F, this.index, this.length, 1, this.debug);
             new CavesPatcher().generate(this.worldObj, this.x, this.y, this.z, this.rand.nextFloat() * 0.5F + 0.5F, this.yaw + (float) Math.PI / 2F, this.pitch / 3F, this.index, this.length, 1, this.debug);
             return false;
@@ -150,16 +161,25 @@ public class CavesPatcher extends MapGenCaves {
                     }
                 }
                 if (this.isRoom) {
-                    if (this.debug)
+                    if (this.debug) {  // unreachable
                         list.remove(list.size() - 1);
+                        this.addPos(this.getPos());
+                        this.addPos(null);
+                        sendMessage();
+                    }
                     return false;
                 }
             }
         }
         ++this.index;
-        if (this.debug)
-            if (this.index >= this.length)
+        if (this.debug) {
+            this.addPos(this.getPos());
+            if (this.index >= this.length) {
                 list.remove(list.size() - 1);
+                this.addPos(null);
+            }
+            sendMessage();
+        }
         return true;
     }
 
@@ -181,8 +201,70 @@ public class CavesPatcher extends MapGenCaves {
             return null;
     }
 
+    public void addPos(double[] pos) {
+        for (int i = posList.size() - 1; i >= 0; --i) {
+            List<double[]> list = posList.get(i);
+            if (list.isEmpty() || list.get(list.size() - 1) != null) {
+                list.add(pos);
+                break;
+            }
+        }
+    }
+
     public static void removeAll() {
         list.clear();
+        posList.clear();
+        sendMessage();
+    }
+
+    public static void sendMessage() {
+        NBTTagList list = new NBTTagList();
+        for (List<double[]> tunnel : posList) {
+            NBTTagList subList = new NBTTagList();
+            for (double[] pos : tunnel) {
+                if (pos == null)
+                    subList.appendTag(new NBTTagCompound());
+                else {
+                    NBTTagCompound posTag = new NBTTagCompound();
+                    posTag.setDouble("x", pos[0]);
+                    posTag.setDouble("y", pos[1]);
+                    posTag.setDouble("z", pos[2]);
+                    subList.appendTag(posTag);
+                }
+            }
+            NBTTagCompound listTag = new NBTTagCompound();
+            listTag.setTag("PosList", subList);
+            list.appendTag(listTag);
+        }
+        MessageDigPos message = new MessageDigPos();
+        message.pos = new NBTTagCompound();
+        message.pos.setTag("TunnelList", list);
+        NetworkManager.instance.sendToAll(message);
+    }
+
+    public static void sendMessageToPlayer(EntityPlayerMP player) {
+        NBTTagList list = new NBTTagList();
+        for (List<double[]> tunnel : posList) {
+            NBTTagList subList = new NBTTagList();
+            for (double[] pos : tunnel) {
+                if (pos == null)
+                    subList.appendTag(new NBTTagCompound());
+                else {
+                    NBTTagCompound posTag = new NBTTagCompound();
+                    posTag.setDouble("x", pos[0]);
+                    posTag.setDouble("y", pos[1]);
+                    posTag.setDouble("z", pos[2]);
+                    subList.appendTag(posTag);
+                }
+            }
+            NBTTagCompound listTag = new NBTTagCompound();
+            listTag.setTag("PosList", subList);
+            list.appendTag(listTag);
+        }
+        MessageDigPos message = new MessageDigPos();
+        message.pos = new NBTTagCompound();
+        message.pos.setTag("TunnelList", list);
+        NetworkManager.instance.sendTo(message, player);
     }
 
 }

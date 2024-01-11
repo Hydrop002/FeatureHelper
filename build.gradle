@@ -6,7 +6,7 @@ buildscript {
         }
         maven {
             name = "forge"
-            url = "https://lss233.littleservice.cn/repositories/minecraft"
+            url = "http://lss233.littleservice.cn/repositories/minecraft"
         }
         maven {
             name = "sonatype"
@@ -63,4 +63,8 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }
