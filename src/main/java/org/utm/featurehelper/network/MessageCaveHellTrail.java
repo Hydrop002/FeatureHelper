@@ -7,12 +7,12 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import org.utm.featurehelper.render.RenderDigPos;
+import org.utm.featurehelper.render.RenderCaveHellTrail;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageDigPos implements IMessage {
+public class MessageCaveHellTrail implements IMessage {
 
     public NBTTagCompound pos;
 
@@ -26,12 +26,12 @@ public class MessageDigPos implements IMessage {
         ByteBufUtils.writeTag(buf, this.pos);
     }
 
-    public static IMessageHandler<MessageDigPos, IMessage> handler = new IMessageHandler<MessageDigPos, IMessage>() {
+    public static IMessageHandler<MessageCaveHellTrail, IMessage> handler = new IMessageHandler<MessageCaveHellTrail, IMessage>() {
 
         @Override
-        public IMessage onMessage(MessageDigPos message, MessageContext ctx) {
+        public IMessage onMessage(MessageCaveHellTrail message, MessageContext ctx) {
             NBTTagList list = message.pos.getTagList("TunnelList", 10);
-            RenderDigPos.instance.posList = new ArrayList<List<double[]>>();
+            RenderCaveHellTrail.instance.posList = new ArrayList<List<double[]>>();
             for (int i = 0; i < list.tagCount(); ++i) {
                 NBTTagCompound listTag = list.getCompoundTagAt(i);
                 NBTTagList subList = listTag.getTagList("PosList", 10);
@@ -47,7 +47,7 @@ public class MessageDigPos implements IMessage {
                                 posTag.getDouble("z"),
                         });
                 }
-                RenderDigPos.instance.posList.add(tunnel);
+                RenderCaveHellTrail.instance.posList.add(tunnel);
             }
             return null;
         }

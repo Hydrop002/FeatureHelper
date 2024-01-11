@@ -27,6 +27,17 @@ commands.cave.continue.complete=No more caves can generate.
 commands.cave.trail.usage=/cave trail clear
 commands.cave.trail.clear.success=Clear all trails and stop generate.
 
+commands.cavehell.usage=/cavehell <start|continue>
+commands.cavehell.start.usage=/cavehell start <x> <y> <z> <tunnel|room>
+commands.cavehell.start.tunnel.usage=/cavehell start <x> <y> <z> tunnel [yaw] [pitch] [radius] [length] [debug]
+commands.cavehell.start.room.usage=/cavehell start <x> <y> <z> room [radius]
+commands.cavehell.start.success=Start nether cave at (%f,%f,%f).
+commands.cavehell.continue.usage=/cavehell continue
+commands.cavehell.continue.success=Continue to generate nether caves at (%f,%f,%f).
+commands.cavehell.continue.complete=No more nether caves can generate.
+commands.cavehell.trail.usage=/cavehell trail clear
+commands.cavehell.trail.clear.success=Clear all trails and stop generate.
+
 commands.populate.usage=/populate <x> <y> <z> <featureName> [args...]
 commands.populate.success=Populate success.
 commands.populate.failed=Populate failed.
