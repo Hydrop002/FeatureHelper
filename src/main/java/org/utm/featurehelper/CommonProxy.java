@@ -1,11 +1,11 @@
 package org.utm.featurehelper;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.relauncher.Side;
 import org.utm.featurehelper.command.*;
-
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import org.utm.featurehelper.network.*;
+
 
 public class CommonProxy {
 
@@ -14,6 +14,7 @@ public class CommonProxy {
         NetworkManager.instance.registerMessage(MessageCaveTrail.handler, MessageCaveTrail.class, 1, Side.CLIENT);
         NetworkManager.instance.registerMessage(MessageCaveHellTrail.handler, MessageCaveHellTrail.class, 2, Side.CLIENT);
         NetworkManager.instance.registerMessage(MessageRavineTrail.handler, MessageRavineTrail.class, 3, Side.CLIENT);
+        NetworkManager.instance.registerMessage(MessageRenderControl.handler, MessageRenderControl.class, 4, Side.CLIENT);
     }
 
     public void serverStarting(FMLServerStartingEvent event) {

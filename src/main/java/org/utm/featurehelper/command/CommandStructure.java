@@ -7,28 +7,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.*;
-import org.utm.featurehelper.network.MessageBoundingBox;
-import org.utm.featurehelper.network.NetworkManager;
-import org.utm.featurehelper.feature.ComponentFactory;
-import org.utm.featurehelper.feature.StartFactory;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.*;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureStart;
+import org.utm.featurehelper.network.MessageBoundingBox;
+import org.utm.featurehelper.network.MessageRenderControl;
+import org.utm.featurehelper.network.NetworkManager;
+import org.utm.featurehelper.feature.ComponentFactory;
+import org.utm.featurehelper.feature.StartFactory;
 
 public class CommandStructure extends CommandBase {
 
     private List<StructureBoundingBox> bbList = new ArrayList<StructureBoundingBox>();
     private StructureBoundingBox lastBB;
+    private World startWorld;
+    private World lastWorld;
 
     private Iterator<StructureComponent> it;
     private StructureStart start;
@@ -59,6 +61,9 @@ public class CommandStructure extends CommandBase {
         if (args[0].equals("continue")) {
 
             if (this.start != null) {
+                if (world != this.startWorld)
+                    throw new CommandException("commands.structure.continue.failed");
+                this.lastWorld = world;
                 StructureBoundingBox bb = this.start.getBoundingBox();
                 StructureBoundingBox newBB = new StructureBoundingBox(bb.minX - 1, bb.minZ - 1, bb.maxX + 1, bb.maxZ + 1);
                 this.setLastBoundingBox(bb);
@@ -74,6 +79,7 @@ public class CommandStructure extends CommandBase {
                         this.addBoundingBox(null);
                     func_152373_a(sender, this, "commands.structure.continue.complete");
                 }
+                this.sendMessage(world);
             } else {
                 func_152373_a(sender, this, "commands.structure.continue.complete");
             }
@@ -94,6 +100,8 @@ public class CommandStructure extends CommandBase {
                 throw new WrongUsageException("commands.structure.start.invalidName");
 
             this.start = StartFactory.getStart(args[4], world, x >> 4, z >> 4, rand);
+            this.startWorld = world;
+            this.lastWorld = world;
 
             boolean debug = false;
             if (args.length >= 6) {
@@ -132,8 +140,10 @@ public class CommandStructure extends CommandBase {
                     }
                 }
             } else {
+                this.it = null;
                 this.start.generateStructure(world, rand, newBB);
             }
+            this.sendMessage(world);
             func_152373_a(sender, this, "commands.structure.start.success", x, y, z);
 
         } else if (args[0].equals("component")) {
@@ -153,6 +163,7 @@ public class CommandStructure extends CommandBase {
 
             StructureComponent component = ComponentFactory.getComponent(args[4], world, x, y, z, rand);
             if (component != null) {
+                this.lastWorld = world;
 
                 if (args.length >= 6) {
                     NBTTagCompound compound = component.func_143010_b();
@@ -189,6 +200,7 @@ public class CommandStructure extends CommandBase {
                 StructureBoundingBox newBB = new StructureBoundingBox(bb.minX - 1, bb.minZ - 1, bb.maxX + 1, bb.maxZ + 1);
                 component.addComponentParts(world, rand, newBB);
                 this.setLastBoundingBox(bb);
+                this.sendMessage(world);
                 func_152373_a(sender, this, "commands.structure.component.success", bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
 
             } else {
@@ -197,11 +209,17 @@ public class CommandStructure extends CommandBase {
 
         } else if (args[0].equals("bb")) {
 
+            if (!(sender instanceof EntityPlayerMP))
+                throw new CommandException("commands.structure.bb.failed");
+
             if (args.length == 1)
                 throw new WrongUsageException("commands.structure.bb.usage");
-            if (args[1].equals("clear")) {
-                this.clearBoundingBox();
-                func_152373_a(sender, this, "commands.structure.bb.clear.success");
+            if (args[1].equals("hide")) {
+                this.hideBoundingBox((EntityPlayerMP) sender);
+                func_152373_a(sender, this, "commands.structure.bb.hide.success");
+            } else if (args[1].equals("show")) {
+                this.showBoundingBox((EntityPlayerMP) sender);
+                func_152373_a(sender, this, "commands.structure.bb.show.success");
             } else {
                 throw new WrongUsageException("commands.structure.bb.usage");
             }
@@ -217,7 +235,7 @@ public class CommandStructure extends CommandBase {
             return getListOfStringsMatchingLastWord(args, new String[] {"start", "continue", "component", "bb"});
         else if (args.length == 2)
             if (args[0].equals("bb"))
-                return getListOfStringsMatchingLastWord(args, new String[] {"clear"});
+                return getListOfStringsMatchingLastWord(args, new String[] {"hide", "show"});
             else
                 return null;
         else if (args.length == 5)
@@ -265,17 +283,14 @@ public class CommandStructure extends CommandBase {
     public void clearBoundingBox() {
         this.bbList.clear();
         this.lastBB = null;
-        this.sendMessage();
     }
 
     public void addBoundingBox(StructureBoundingBox bb) {
         this.bbList.add(bb);
-        this.sendMessage();
     }
 
     public void setLastBoundingBox(StructureBoundingBox bb) {
         this.lastBB = bb;
-        this.sendMessage();
     }
 
     /*
@@ -292,7 +307,7 @@ public class CommandStructure extends CommandBase {
     FMLIndexedMessageToMessageCodec.encode
     FMLProxyPacket
     */
-    public void sendMessage() {
+    public void sendMessage(World world) {
         NBTTagList list = new NBTTagList();
         for (StructureBoundingBox bb : this.bbList) {
             if (bb == null)
@@ -302,13 +317,16 @@ public class CommandStructure extends CommandBase {
         }
         MessageBoundingBox message = new MessageBoundingBox();
         message.bb = new NBTTagCompound();
-        message.bb.setTag("BBList", list);
-        if (this.lastBB != null)
+        if (world == this.startWorld)
+            message.bb.setTag("BBList", list);
+        else
+            message.bb.setTag("BBList", new NBTTagList());
+        if (world == this.lastWorld && this.lastBB != null)
             message.bb.setTag("lastBB", this.lastBB.func_151535_h());
-        NetworkManager.instance.sendToAll(message);
+        NetworkManager.instance.sendToDimension(message, world.provider.dimensionId);
     }
 
-    public void sendMessageToPlayer(EntityPlayerMP player) {
+    public void sendMessageToPlayer(EntityPlayerMP player, World world) {
         NBTTagList list = new NBTTagList();
         for (StructureBoundingBox bb : this.bbList) {
             if (bb == null)
@@ -318,9 +336,28 @@ public class CommandStructure extends CommandBase {
         }
         MessageBoundingBox message = new MessageBoundingBox();
         message.bb = new NBTTagCompound();
-        message.bb.setTag("BBList", list);
-        if (this.lastBB != null)
+        if (world == this.startWorld)
+            message.bb.setTag("BBList", list);
+        else
+            message.bb.setTag("BBList", new NBTTagList());
+        if (world == this.lastWorld && this.lastBB != null)
             message.bb.setTag("lastBB", this.lastBB.func_151535_h());
+        NetworkManager.instance.sendTo(message, player);
+    }
+
+    public void hideBoundingBox(EntityPlayerMP player) {
+        MessageRenderControl message = new MessageRenderControl();
+        message.rc = new NBTTagCompound();
+        message.rc.setByte("renderType", (byte) 0);
+        message.rc.setBoolean("render", false);
+        NetworkManager.instance.sendTo(message, player);
+    }
+
+    public void showBoundingBox(EntityPlayerMP player) {
+        MessageRenderControl message = new MessageRenderControl();
+        message.rc = new NBTTagCompound();
+        message.rc.setByte("renderType", (byte) 0);
+        message.rc.setBoolean("render", true);
         NetworkManager.instance.sendTo(message, player);
     }
 

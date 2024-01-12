@@ -20,9 +20,10 @@ public class RenderBoundingBox {
 
     public StructureBoundingBox bb;
     public List<StructureBoundingBox> bbList = new ArrayList<StructureBoundingBox>();
+    public boolean isRender = true;
 
     public void render(EntityLivingBase entity, float partialTicks) {
-        if (this.bb == null)
+        if (!this.isRender || this.bb == null)
             return;
         double cameraX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
         double cameraY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
@@ -46,7 +47,7 @@ public class RenderBoundingBox {
     }
 
     public void renderList(EntityLivingBase entity, float partialTicks) {
-        if (this.bbList.isEmpty())
+        if (!this.isRender || this.bbList.isEmpty())
             return;
         double cameraX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
         double cameraY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
