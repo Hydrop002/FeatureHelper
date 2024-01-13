@@ -19,9 +19,10 @@ public class RenderTrail {
     public Frustrum frustrum = new Frustrum();
 
     public List<List<double[]>> posList = new ArrayList<List<double[]>>();
+    public boolean isRender = true;
 
     public void renderList(EntityLivingBase entity, float partialTicks) {
-        if (this.posList.isEmpty())
+        if (!this.isRender || this.posList.isEmpty())
             return;
         double cameraX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
         double cameraY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;

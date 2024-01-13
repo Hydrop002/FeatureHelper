@@ -17,7 +17,7 @@ import java.util.List;
 
 public class CavesPatcher extends MapGenCaves {
 
-    private World worldObj;
+    public static World worldObj;
     private double x;
     private double y;
     private double z;
@@ -39,7 +39,7 @@ public class CavesPatcher extends MapGenCaves {
     private static List<List<double[]>> posList = new ArrayList<List<double[]>>();
 
     public void generate(World world, double x, double y, double z, float radius, float yaw, float pitch, int index, int length, double heightFactor, boolean debug) {
-        this.worldObj = world;
+        worldObj = world;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -103,8 +103,8 @@ public class CavesPatcher extends MapGenCaves {
                 list.remove(list.size() - 1);
                 this.addPos(null);
             }
-            new CavesPatcher().generate(this.worldObj, this.x, this.y, this.z, this.rand.nextFloat() * 0.5F + 0.5F, this.yaw - (float) Math.PI / 2F, this.pitch / 3F, this.index, this.length, 1, this.debug);
-            new CavesPatcher().generate(this.worldObj, this.x, this.y, this.z, this.rand.nextFloat() * 0.5F + 0.5F, this.yaw + (float) Math.PI / 2F, this.pitch / 3F, this.index, this.length, 1, this.debug);
+            new CavesPatcher().generate(worldObj, this.x, this.y, this.z, this.rand.nextFloat() * 0.5F + 0.5F, this.yaw - (float) Math.PI / 2F, this.pitch / 3F, this.index, this.length, 1, this.debug);
+            new CavesPatcher().generate(worldObj, this.x, this.y, this.z, this.rand.nextFloat() * 0.5F + 0.5F, this.yaw + (float) Math.PI / 2F, this.pitch / 3F, this.index, this.length, 1, this.debug);
             return false;
         }
         if (this.isRoom || this.rand.nextInt(4) != 0) {
@@ -119,7 +119,7 @@ public class CavesPatcher extends MapGenCaves {
                 for (int k = minZ; !foundWater && k < maxZ; ++k) {
                     for (int j = maxY + 1; !foundWater && j >= minY - 1; --j) {
                         if (j >= 0 && j < 256) {
-                            Block block = this.worldObj.getBlock(i, j, k);
+                            Block block = worldObj.getBlock(i, j, k);
                             if (block == Blocks.flowing_water || block == Blocks.water)
                                 foundWater = true;
                             if (j != minY - 1 && i != minX && i != maxX - 1 && k != minZ && k != maxZ - 1)
@@ -138,8 +138,8 @@ public class CavesPatcher extends MapGenCaves {
                             for (int j = maxY - 1; j >= minY; --j) {
                                 double offsetRatioY = (j + 0.5 - this.y) / verRadius;
                                 if (offsetRatioY > -0.7 && offsetRatioX * offsetRatioX + offsetRatioY * offsetRatioY + offsetRatioZ * offsetRatioZ < 1) {
-                                    Block block = this.worldObj.getBlock(i, j + 1, k);
-                                    BiomeGenBase biome = this.worldObj.getBiomeGenForCoords(i, k);
+                                    Block block = worldObj.getBlock(i, j + 1, k);
+                                    BiomeGenBase biome = worldObj.getBiomeGenForCoords(i, k);
                                     Block topBlock = this.isExceptionBiome(biome) ? Blocks.grass : biome.topBlock;
                                     Block fillerBlock = this.isExceptionBiome(biome) ? Blocks.dirt : biome.fillerBlock;
                                     if (block == topBlock) {
@@ -147,11 +147,11 @@ public class CavesPatcher extends MapGenCaves {
                                     }
                                     if (block == Blocks.stone || block == fillerBlock || block == topBlock) {
                                         if (j < 10) {
-                                            this.worldObj.setBlock(i, j + 1, k, Blocks.lava, 0, 2);
+                                            worldObj.setBlock(i, j + 1, k, Blocks.lava, 0, 2);
                                         } else {
-                                            this.worldObj.setBlock(i, j + 1, k, Blocks.air, 0, 2);
-                                            if (foundTop && this.worldObj.getBlock(i, j, k) == fillerBlock) {
-                                                this.worldObj.setBlock(i, j, k, topBlock, 0, 2);
+                                            worldObj.setBlock(i, j + 1, k, Blocks.air, 0, 2);
+                                            if (foundTop && worldObj.getBlock(i, j, k) == fillerBlock) {
+                                                worldObj.setBlock(i, j, k, topBlock, 0, 2);
                                             }
                                         }
                                     }
@@ -214,7 +214,6 @@ public class CavesPatcher extends MapGenCaves {
     public static void removeAll() {
         list.clear();
         posList.clear();
-        sendMessage();
     }
 
     public static void sendMessage() {
@@ -239,10 +238,10 @@ public class CavesPatcher extends MapGenCaves {
         MessageCaveTrail message = new MessageCaveTrail();
         message.pos = new NBTTagCompound();
         message.pos.setTag("TunnelList", list);
-        NetworkManager.instance.sendToAll(message);
+        NetworkManager.instance.sendToDimension(message, worldObj.provider.dimensionId);
     }
 
-    public static void sendMessageToPlayer(EntityPlayerMP player) {
+    public static void sendMessageToPlayer(EntityPlayerMP player, World world) {
         NBTTagList list = new NBTTagList();
         for (List<double[]> tunnel : posList) {
             NBTTagList subList = new NBTTagList();
@@ -263,7 +262,10 @@ public class CavesPatcher extends MapGenCaves {
         }
         MessageCaveTrail message = new MessageCaveTrail();
         message.pos = new NBTTagCompound();
-        message.pos.setTag("TunnelList", list);
+        if (world == worldObj)
+            message.pos.setTag("TunnelList", list);
+        else
+            message.pos.setTag("TunnelList", new NBTTagList());
         NetworkManager.instance.sendTo(message, player);
     }
 

@@ -1,11 +1,16 @@
 package org.utm.featurehelper.command;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import org.utm.featurehelper.feature.patch.RavinePatcher;
+import org.utm.featurehelper.network.MessageRenderControl;
+import org.utm.featurehelper.network.NetworkManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +64,6 @@ public class CommandRavine extends CommandBase {
             z = func_110666_a(sender, z, args[3]);
 
             RavinePatcher.removeAll();
-
             if (args[4].equals("tunnel")) {
 
                 float yaw = rand.nextFloat() * (float) Math.PI * 2F;
@@ -91,6 +95,7 @@ public class CommandRavine extends CommandBase {
             } else {
                 throw new WrongUsageException("commands.ravine.start.usage");
             }
+            RavinePatcher.sendMessage();
 
             func_152373_a(sender, this, "commands.ravine.start.success", x, y, z);
 
@@ -98,6 +103,8 @@ public class CommandRavine extends CommandBase {
 
             RavinePatcher current = RavinePatcher.getCurrent();
             if (current != null) {
+                if (world != RavinePatcher.worldObj)
+                    throw new CommandException("commands.ravine.continue.failed");
                 current.addRoom();
                 double[] pos = current.getPos();
                 func_152373_a(sender, this, "commands.ravine.continue.success", pos[0], pos[1], pos[2]);
@@ -107,11 +114,17 @@ public class CommandRavine extends CommandBase {
 
         } else if (args[0].equals("trail")) {
 
+            if (!(sender instanceof EntityPlayerMP))
+                throw new CommandException("commands.ravine.trail.failed");
+
             if (args.length == 1)
                 throw new WrongUsageException("commands.ravine.trail.usage");
-            if (args[1].equals("clear")) {
-                RavinePatcher.removeAll();
-                func_152373_a(sender, this, "commands.ravine.trail.clear.success");
+            if (args[1].equals("hide")) {
+                this.hideTrail((EntityPlayerMP) sender);
+                func_152373_a(sender, this, "commands.ravine.trail.hide.success");
+            } else if (args[1].equals("show")) {
+                this.showTrail((EntityPlayerMP) sender);
+                func_152373_a(sender, this, "commands.ravine.trail.show.success");
             } else {
                 throw new WrongUsageException("commands.ravine.trail.usage");
             }
@@ -127,7 +140,7 @@ public class CommandRavine extends CommandBase {
             return getListOfStringsMatchingLastWord(args, new String[] {"start", "continue", "trail"});
         else if (args.length == 2)
             if (args[0].equals("trail"))
-                return getListOfStringsMatchingLastWord(args, new String[] {"clear"});
+                return getListOfStringsMatchingLastWord(args, new String[] {"hide", "show"});
             else
                 return null;
         else if (args.length == 5) {
@@ -167,6 +180,22 @@ public class CommandRavine extends CommandBase {
                 return null;
         else
             return null;
+    }
+
+    public void hideTrail(EntityPlayerMP player) {
+        MessageRenderControl message = new MessageRenderControl();
+        message.rc = new NBTTagCompound();
+        message.rc.setByte("renderType", (byte) 3);
+        message.rc.setBoolean("render", false);
+        NetworkManager.instance.sendTo(message, player);
+    }
+
+    public void showTrail(EntityPlayerMP player) {
+        MessageRenderControl message = new MessageRenderControl();
+        message.rc = new NBTTagCompound();
+        message.rc.setByte("renderType", (byte) 3);
+        message.rc.setBoolean("render", true);
+        NetworkManager.instance.sendTo(message, player);
     }
 
 }

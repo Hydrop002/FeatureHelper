@@ -1,11 +1,16 @@
 package org.utm.featurehelper.command;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import org.utm.featurehelper.feature.patch.CavesHellPatcher;
+import org.utm.featurehelper.network.MessageRenderControl;
+import org.utm.featurehelper.network.NetworkManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +64,6 @@ public class CommandCaveHell extends CommandBase {
             z = func_110666_a(sender, z, args[3]);
 
             CavesHellPatcher.removeAll();
-
             if (args[4].equals("room")) {
 
                 float radius;
@@ -101,6 +105,7 @@ public class CommandCaveHell extends CommandBase {
             } else {
                 throw new WrongUsageException("commands.cavehell.start.usage");
             }
+            CavesHellPatcher.sendMessage();
 
             func_152373_a(sender, this, "commands.cavehell.start.success", x, y, z);
 
@@ -108,6 +113,8 @@ public class CommandCaveHell extends CommandBase {
 
             CavesHellPatcher current = CavesHellPatcher.getCurrent();
             if (current != null) {
+                if (world != CavesHellPatcher.worldObj)
+                    throw new CommandException("commands.cavehell.continue.failed");
                 current.addRoom();
                 double[] pos = current.getPos();
                 func_152373_a(sender, this, "commands.cavehell.continue.success", pos[0], pos[1], pos[2]);
@@ -117,11 +124,17 @@ public class CommandCaveHell extends CommandBase {
 
         } else if (args[0].equals("trail")) {
 
+            if (!(sender instanceof EntityPlayerMP))
+                throw new CommandException("commands.cavehell.trail.failed");
+
             if (args.length == 1)
                 throw new WrongUsageException("commands.cavehell.trail.usage");
-            if (args[1].equals("clear")) {
-                CavesHellPatcher.removeAll();
-                func_152373_a(sender, this, "commands.cavehell.trail.clear.success");
+            if (args[1].equals("hide")) {
+                this.hideTrail((EntityPlayerMP) sender);
+                func_152373_a(sender, this, "commands.cavehell.trail.hide.success");
+            } else if (args[1].equals("show")) {
+                this.showTrail((EntityPlayerMP) sender);
+                func_152373_a(sender, this, "commands.cavehell.trail.show.success");
             } else {
                 throw new WrongUsageException("commands.cavehell.trail.usage");
             }
@@ -137,7 +150,7 @@ public class CommandCaveHell extends CommandBase {
             return getListOfStringsMatchingLastWord(args, new String[] {"start", "continue", "trail"});
         else if (args.length == 2)
             if (args[0].equals("trail"))
-                return getListOfStringsMatchingLastWord(args, new String[] {"clear"});
+                return getListOfStringsMatchingLastWord(args, new String[] {"hide", "show"});
             else
                 return null;
         else if (args.length == 5) {
@@ -185,6 +198,22 @@ public class CommandCaveHell extends CommandBase {
                 return null;
         else
             return null;
+    }
+
+    public void hideTrail(EntityPlayerMP player) {
+        MessageRenderControl message = new MessageRenderControl();
+        message.rc = new NBTTagCompound();
+        message.rc.setByte("renderType", (byte) 2);
+        message.rc.setBoolean("render", false);
+        NetworkManager.instance.sendTo(message, player);
+    }
+
+    public void showTrail(EntityPlayerMP player) {
+        MessageRenderControl message = new MessageRenderControl();
+        message.rc = new NBTTagCompound();
+        message.rc.setByte("renderType", (byte) 2);
+        message.rc.setBoolean("render", true);
+        NetworkManager.instance.sendTo(message, player);
     }
 
 }

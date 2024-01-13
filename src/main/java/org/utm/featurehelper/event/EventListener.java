@@ -35,9 +35,9 @@ public class EventListener {
             EntityPlayerMP player = (EntityPlayerMP) event.entity;
             CommandStructure command = (CommandStructure) MinecraftServer.getServer().getCommandManager().getCommands().get("structure");
             command.sendMessageToPlayer(player, event.world);
-            CavesPatcher.sendMessageToPlayer(player);
-            CavesHellPatcher.sendMessageToPlayer(player);
-            RavinePatcher.sendMessageToPlayer(player);
+            CavesPatcher.sendMessageToPlayer(player, event.world);
+            CavesHellPatcher.sendMessageToPlayer(player, event.world);
+            RavinePatcher.sendMessageToPlayer(player, event.world);
         }
     }
 
