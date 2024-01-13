@@ -1,23 +1,50 @@
 # FeatureHelper
 
-使用命令生成洞穴、峡谷、结构和地物。
+使用命令生成洞穴、结构和地物。仅用于学习和交流。
 
-![img](img/main.png)
+## 命令格式
 
-已实现：
-* 结构组件生成
-* 结构生成
-* 结构单步生成
-* 结构NBT支持
-* 结构碰撞盒渲染
-* 特征生成
-* 洞穴、下界洞穴生成
-* 洞穴、下界洞穴单步生成
-* 洞穴、下界洞穴路径渲染
+结构：
+```
+/structure start <x> <y> <z> <structureName> [debug] [dataTag]
+/structure continue
+/structure component <x> <y> <z> <compName> [dataTag]
+/structure bb <hide|show>
+```
 
-待实现：
-* 峡谷生成
-* 峡谷单步生成
+洞穴：
+```
+/cave start <x> <y> <z> tunnel [yaw] [pitch] [radius] [length] [debug]
+/cave start <x> <y> <z> room [radius]
+/cave continue
+/cave trail <hide|show>
+/cavehell start <x> <y> <z> tunnel [yaw] [pitch] [radius] [length] [debug]
+/cavehell start <x> <y> <z> room [radius]
+/cavehell continue
+/cavehell trail <hide|show>
+/ravine start <x> <y> <z> tunnel [yaw] [pitch] [radius] [length] [debug]
+/ravine continue
+/ravine trail <hide|show>
+```
+
+地物：
+```
+/populate <x> <y> <z> <featureName> [args...]
+```
+
+## 画廊
+
+![bb](img/bb.png)
+
+![trail](img/trail.png)
+
+![room](img/room.png)
+
+![lake](img/lake.png)
+
+![blob](img/blob.png)
+
+![tree](img/tree.png)
 
 ---
 
