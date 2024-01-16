@@ -239,30 +239,6 @@ public class CommandStructure extends CommandBase {
             return null;
     }
 
-    public Map getStartNameMap() {
-        try {
-            Field startNameToClassMap = MapGenStructureIO.class.getDeclaredField("startNameToClassMap");
-            // Field startNameToClassMap = MapGenStructureIO.class.getDeclaredField("field_143040_a");
-            startNameToClassMap.setAccessible(true);
-            return (Map) startNameToClassMap.get(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public Map getComponentNameMap() {
-        try {
-            Field componentNameToClassMap = MapGenStructureIO.class.getDeclaredField("componentNameToClassMap");
-            // Field componentNameToClassMap = MapGenStructureIO.class.getDeclaredField("field_143039_c");
-            componentNameToClassMap.setAccessible(true);
-            return (Map) componentNameToClassMap.get(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public boolean canAddBoundingBox() {
         return !this.bbList.contains(null);
     }
