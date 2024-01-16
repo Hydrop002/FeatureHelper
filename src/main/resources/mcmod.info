@@ -2,7 +2,7 @@
 {
   "modid": "featurehelper",
   "name": "Feature Helper",
-  "description": "...",
+  "description": "Learn to generate caves, ravines, structures and features.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
