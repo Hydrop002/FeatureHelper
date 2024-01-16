@@ -31,7 +31,10 @@ public class RenderBoundingBox {
         double cameraY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
         double cameraZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
         this.camera.setPosition(cameraX, cameraY, cameraZ);
-        AxisAlignedBB aabb = new AxisAlignedBB(this.bb.minX, this.bb.minY, this.bb.minZ, this.bb.maxX + 1, this.bb.maxY + 1, this.bb.maxZ + 1);
+        AxisAlignedBB aabb = new AxisAlignedBB(
+                this.bb.minX - 0.01, this.bb.minY - 0.01, this.bb.minZ - 0.01,
+                this.bb.maxX + 1.01, this.bb.maxY + 1.01, this.bb.maxZ + 1.01
+        );
         if (this.camera.isBoundingBoxInFrustum(aabb)) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(-cameraX, -cameraY, -cameraZ);
@@ -59,30 +62,35 @@ public class RenderBoundingBox {
         Iterator<StructureBoundingBox> it = this.bbList.iterator();
         boolean start = true;
         while (it.hasNext()) {
-            StructureBoundingBox bb;
-            bb = it.next();
+            StructureBoundingBox bb = it.next();
             if (bb == null)
                 return;
-            if (it.hasNext() || entity.ticksExisted % 20 < 10) {
-                AxisAlignedBB aabb = new AxisAlignedBB(bb.minX, bb.minY, bb.minZ, bb.maxX + 1, bb.maxY + 1, bb.maxZ + 1);
-                if (this.camera.isBoundingBoxInFrustum(aabb)) {
-                    GlStateManager.pushMatrix();
-                    GlStateManager.translate(-cameraX, -cameraY, -cameraZ);
-                    GlStateManager.depthMask(false);
-                    GlStateManager.disableTexture2D();
-                    GlStateManager.disableLighting();
-                    GlStateManager.disableCull();
-                    GlStateManager.disableBlend();
-                    if (start)
-                        RenderGlobal.drawOutlinedBoundingBox(aabb, 255, 0, 0, 255);
-                    else
-                        RenderGlobal.drawOutlinedBoundingBox(aabb, 0, 255, 0, 255);
-                    GlStateManager.enableTexture2D();
-                    GlStateManager.enableCull();
-                    GlStateManager.disableBlend();
-                    GlStateManager.depthMask(true);
-                    GlStateManager.popMatrix();
-                }
+            boolean last = !it.hasNext();
+            if (last && entity.ticksExisted % 20 < 10)
+                break;
+            AxisAlignedBB aabb = new AxisAlignedBB(
+                    bb.minX - 0.01, bb.minY - 0.01, bb.minZ - 0.01,
+                    bb.maxX + 1.01, bb.maxY + 1.01, bb.maxZ + 1.01
+            );
+            if (this.camera.isBoundingBoxInFrustum(aabb)) {
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(-cameraX, -cameraY, -cameraZ);
+                GlStateManager.depthMask(false);
+                GlStateManager.disableTexture2D();
+                GlStateManager.disableLighting();
+                GlStateManager.disableCull();
+                GlStateManager.disableBlend();
+                if (last)
+                    RenderGlobal.drawOutlinedBoundingBox(aabb, 255, 255, 0, 255);
+                else if (start)
+                    RenderGlobal.drawOutlinedBoundingBox(aabb, 255, 0, 0, 255);
+                else
+                    RenderGlobal.drawOutlinedBoundingBox(aabb, 0, 255, 0, 255);
+                GlStateManager.enableTexture2D();
+                GlStateManager.enableCull();
+                GlStateManager.disableBlend();
+                GlStateManager.depthMask(true);
+                GlStateManager.popMatrix();
             }
             start = false;
         }
