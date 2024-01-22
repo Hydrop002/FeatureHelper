@@ -2,14 +2,14 @@
 {
   "modid": "featurehelper",
   "name": "Feature Helper",
-  "description": "...",
+  "description": "Learn to generate caves, ravines, structures and features.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
   "authorList": ["Hydrop002"],
   "credits": "",
-  "logoFile": "",
+  "logoFile": "assets/featurehelper/textures/logo.png",
   "screenshots": [],
   "dependencies": []
 }
