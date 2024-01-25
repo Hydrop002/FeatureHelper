@@ -10,6 +10,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeMesa;
 import net.minecraft.world.gen.structure.*;
+import org.utm.featurehelper.feature.patch.EndCityStartPatcher;
+import org.utm.featurehelper.feature.patch.MansionStartPatcher;
 
 public class StartFactory {
     
@@ -26,14 +28,8 @@ public class StartFactory {
         factory.put("Temple", (world, chunkX, chunkZ, rand) -> new MapGenScatteredFeature.Start(world, rand, chunkX, chunkZ));
         factory.put("Fortress", (world, chunkX, chunkZ, rand) -> new MapGenNetherBridge.Start(world, rand, chunkX, chunkZ));
         factory.put("Monument", (world, chunkX, chunkZ, rand) -> new StructureOceanMonument.StartMonument(world, rand, chunkX, chunkZ));
-        factory.put("EndCity", (world, chunkX, chunkZ, rand) -> {
-            // todo EndCityStartPatcher -- world.getChunkFromChunkCoords(chunkX, chunkZ).getHeightValue(7, 7)
-            return null;
-        });
-        factory.put("Mansion", (world, chunkX, chunkZ, rand) -> {
-            // todo MansionStartPatcher
-            return null;
-        });
+        factory.put("EndCity", (world, chunkX, chunkZ, rand) -> new EndCityStartPatcher(world, rand, chunkX, chunkZ));
+        factory.put("Mansion", (world, chunkX, chunkZ, rand) -> new MansionStartPatcher(world, rand, chunkX, chunkZ));
     }
 
     public static Set<String> getNameSet() {

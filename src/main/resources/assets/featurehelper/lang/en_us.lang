@@ -3,6 +3,7 @@ commands.structure.start.usage=/structure start <x> <y> <z> <structureName> [deb
 commands.structure.start.success=Place structure start at (%d,%d,%d).
 commands.structure.start.invalidName=The name of structure start is invalid!
 commands.structure.start.tagError=Data tag parsing failed: %s.
+commands.structure.start.failed=Place structure failed.
 commands.structure.continue.usage=/structure continue
 commands.structure.continue.success=Continue to generate structures.
 commands.structure.continue.complete=No more structures can generate.

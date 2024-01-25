@@ -93,6 +93,9 @@ public class CommandStructure extends CommandBase {
             this.startWorld = world;
             this.lastWorld = world;
 
+            if (!this.start.isSizeableStructure())
+                throw new CommandException("commands.structure.start.failed");
+
             boolean debug = false;
             if (args.length >= 6) {
                 debug = parseBoolean(args[5]);
