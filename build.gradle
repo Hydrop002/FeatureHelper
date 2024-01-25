@@ -78,6 +78,7 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    implementation ("net.minecraftforge:mergetool:0.2.3.3") { force = true }
 
 }
 
@@ -115,6 +116,10 @@ publishing {
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
+compileJava.options.encoding = "UTF-8"
+
+sourceSets {
+    main {
+        output.resourcesDir = java.outputDir
+    }
 }

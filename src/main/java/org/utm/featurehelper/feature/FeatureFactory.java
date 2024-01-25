@@ -2,6 +2,7 @@ package org.utm.featurehelper.feature;
 
 import net.minecraft.world.gen.feature.*;
 import org.utm.featurehelper.feature.patch.BlockBlobPatcher;
+import org.utm.featurehelper.feature.patch.FossilsPatcher;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
@@ -55,7 +56,7 @@ public class FeatureFactory {
         factory.put(getName(WorldGenEndPodium.class), WorldGenEndPodium.class);
         factory.put(getName(WorldGenEndGateway.class), WorldGenEndGateway.class);
         factory.put(getName(WorldGenEndIsland.class), WorldGenEndIsland.class);
-        factory.put(getName(WorldGenFossils.class), WorldGenFossils.class);
+        factory.put(getName(WorldGenFossils.class), FossilsPatcher.class);
     }
 
     public static String getName(Class<? extends WorldGenerator> clazz) {

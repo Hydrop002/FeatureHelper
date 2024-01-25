@@ -131,44 +131,35 @@ public class CommandRavine extends CommandBase {
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, new String[] {"start", "continue", "trail"});
-        else if (args.length == 2)
-            if (args[0].equals("trail"))
-                return getListOfStringsMatchingLastWord(args, new String[] {"hide", "show"});
-            else
-                return Collections.emptyList();
-        else if (args.length == 5) {
-            notifyCommandListener(sender, this, "commands.ravine.start.usage");
-            return getListOfStringsMatchingLastWord(args, new String[]{"tunnel"});
-        } else if (args.length == 6) {
-            if (args[0].equals("start")) {
-                if (args[4].equals("tunnel")) {
+        if (args[0].equals("start")) {
+            if (args.length <= 4)
+                return getTabCompletionCoordinate(args, 1, pos);
+            else if (args.length == 5) {
+                notifyCommandListener(sender, this, "commands.ravine.start.usage");
+                return getListOfStringsMatchingLastWord(args, new String[]{"tunnel"});
+            }
+            if (args[4].equals("tunnel"))
+                if (args.length == 6) {
                     Random rand = new Random();
                     float yaw = rand.nextFloat() * 360;
                     return Arrays.asList(String.valueOf(yaw));
-                }
-            }
-            return Collections.emptyList();
-        } else if (args.length == 7) {
-            if (args[0].equals("start")) {
-                if (args[4].equals("tunnel")) {
+                } else if (args.length == 7) {
                     Random rand = new Random();
                     float pitch = (rand.nextFloat() - 0.5F) * 45F / (float) Math.PI;
                     return Arrays.asList(String.valueOf(pitch));
-                }
-            }
-            return Collections.emptyList();
-        } else if (args.length == 8) {
-            if (args[0].equals("start")) {
-                if (args[4].equals("tunnel")) {
+                } else if (args.length == 8) {
                     Random rand = new Random();
                     float radius = (rand.nextFloat() * 2.0F + rand.nextFloat()) * 2.0F;
                     return Arrays.asList(String.valueOf(radius));
-                }
-            }
-            return Collections.emptyList();
-        } else if (args.length == 10)
-            if (args[0].equals("start") && args[4].equals("tunnel"))
-                return getListOfStringsMatchingLastWord(args, new String[] {"false", "true"});
+                } else if (args.length == 10)
+                    return getListOfStringsMatchingLastWord(args, new String[] {"false", "true"});
+                else
+                    return Collections.emptyList();
+            else
+                return Collections.emptyList();
+        } else if (args[0].equals("trail"))
+            if (args.length == 2)
+                return getListOfStringsMatchingLastWord(args, new String[] {"hide", "show"});
             else
                 return Collections.emptyList();
         else
