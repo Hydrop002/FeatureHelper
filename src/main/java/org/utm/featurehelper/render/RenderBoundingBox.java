@@ -46,7 +46,7 @@ public class RenderBoundingBox {
             RenderGlobal.drawBoundingBox(
                     aabb.minX, aabb.minY, aabb.minZ,
                     aabb.maxX, aabb.maxY, aabb.maxZ,
-                    255, 255, 255, 255
+                    1.0F, 1.0F, 1.0F, 1.0F
             );
             GlStateManager.enableTexture2D();
             GlStateManager.enableCull();
@@ -88,19 +88,19 @@ public class RenderBoundingBox {
                     RenderGlobal.drawBoundingBox(
                             aabb.minX, aabb.minY, aabb.minZ,
                             aabb.maxX, aabb.maxY, aabb.maxZ,
-                            255, 255, 0, 255
+                            1.0F, 1.0F, 0.0F, 1.0F
                     );
                 else if (start)
                     RenderGlobal.drawBoundingBox(
                             aabb.minX, aabb.minY, aabb.minZ,
                             aabb.maxX, aabb.maxY, aabb.maxZ,
-                            255, 0, 0, 255
+                            1.0F, 0.0F, 0.0F, 1.0F
                     );
                 else
                     RenderGlobal.drawBoundingBox(
                             aabb.minX, aabb.minY, aabb.minZ,
                             aabb.maxX, aabb.maxY, aabb.maxZ,
-                            0, 255, 0, 255
+                            0.0F, 1.0F, 0.0F, 1.0F
                     );
                 GlStateManager.enableTexture2D();
                 GlStateManager.enableCull();
