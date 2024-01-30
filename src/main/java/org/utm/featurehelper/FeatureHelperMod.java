@@ -10,6 +10,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.utm.featurehelper.event.EventListener;
+import org.utm.featurehelper.network.*;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(FeatureHelperMod.MODID)
@@ -28,11 +29,11 @@ public class FeatureHelperMod
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-        // NetworkManager.instance.registerMessage(MessageBoundingBox.handler, MessageBoundingBox.class, 0, Side.CLIENT);
-        // NetworkManager.instance.registerMessage(MessageCaveTrail.handler, MessageCaveTrail.class, 1, Side.CLIENT);
-        // NetworkManager.instance.registerMessage(MessageCaveHellTrail.handler, MessageCaveHellTrail.class, 2, Side.CLIENT);
-        // NetworkManager.instance.registerMessage(MessageRavineTrail.handler, MessageRavineTrail.class, 3, Side.CLIENT);
-        // NetworkManager.instance.registerMessage(MessageRenderControl.handler, MessageRenderControl.class, 4, Side.CLIENT);
+        NetworkManager.instance.registerMessage(0, MessageBoundingBox.class, MessageBoundingBox::encode, MessageBoundingBox::new, MessageBoundingBox::handler);
+        NetworkManager.instance.registerMessage(1, MessageCaveTrail.class, MessageCaveTrail::encode, MessageCaveTrail::new, MessageCaveTrail::handler);
+        NetworkManager.instance.registerMessage(2, MessageCaveHellTrail.class, MessageCaveHellTrail::encode, MessageCaveHellTrail::new, MessageCaveHellTrail::handler);
+        NetworkManager.instance.registerMessage(3, MessageRavineTrail.class, MessageRavineTrail::encode, MessageRavineTrail::new, MessageRavineTrail::handler);
+        NetworkManager.instance.registerMessage(4, MessageRenderControl.class, MessageRenderControl::encode, MessageRenderControl::new, MessageRenderControl::handler);
     }
 
     public void serverStarting(FMLServerStartingEvent event) {

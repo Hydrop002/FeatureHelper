@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.utm.featurehelper.render.RenderBoundingBox;
+import org.utm.featurehelper.render.RenderTrail;
 
 public class EventListener {
     
@@ -14,11 +16,11 @@ public class EventListener {
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
         EntityLivingBase entity = Minecraft.getInstance().player;
-        // RenderBoundingBox.instance.render(entity, event.getPartialTicks());
-        // RenderBoundingBox.instance.renderList(entity, event.getPartialTicks());
-        // RenderTrail.caveRenderer.renderList(entity, event.getPartialTicks());
-        // RenderTrail.caveHellRenderer.renderList(entity, event.getPartialTicks());
-        // RenderTrail.ravineRenderer.renderList(entity, event.getPartialTicks());
+        RenderBoundingBox.instance.render(entity, event.getPartialTicks());
+        RenderBoundingBox.instance.renderList(entity, event.getPartialTicks());
+        RenderTrail.caveRenderer.renderList(entity, event.getPartialTicks());
+        RenderTrail.caveHellRenderer.renderList(entity, event.getPartialTicks());
+        RenderTrail.ravineRenderer.renderList(entity, event.getPartialTicks());
     }
 
     @SubscribeEvent
