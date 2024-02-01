@@ -115,6 +115,7 @@ public class ComponentFactory {
         factory.put("TeDP", (world, x, y, z, rand) -> new ComponentScatteredFeaturePieces.DesertPyramid(rand, x, z));
         factory.put("TeJP", (world, x, y, z, rand) -> new ComponentScatteredFeaturePieces.JunglePyramid(rand, x, z));
         factory.put("TeSH", (world, x, y, z, rand) -> new ComponentScatteredFeaturePieces.SwampHut(rand, x, z));
+        factory.put("Iglu", (world, x, y, z, rand) -> new ComponentScatteredFeaturePieces.Igloo(rand, x, z));
         factory.put("SHStart", (world, x, y, z, rand) -> new StructureStrongholdPieces.Stairs2(0, rand, x, z));
         factory.put("SHSD", (world, x, y, z, rand) -> {
             EnumFacing face = EnumFacing.Plane.HORIZONTAL.random(rand);
