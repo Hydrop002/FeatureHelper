@@ -111,6 +111,7 @@ public class CommandStructure extends CommandBase {
                     } catch (NBTException e) {
                         throw new CommandException("commands.structure.start.tagError", e.getMessage());
                     }
+                    this.start.getComponents().clear();
                     this.start.readStructureComponentsFromNBT(world, compound);
                 }
             }
