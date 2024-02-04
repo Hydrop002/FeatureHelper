@@ -49,7 +49,12 @@ public class PieceFactory {
             if (config == null) config = new MineshaftConfig(0.004, MineshaftStructure.Type.NORMAL);
             return new MineshaftPieces.Stairs(0, rand, bb, face, config.type);
         });
-        factory.put("ViStart", (world, x, y, z, rand) -> null);  // todo ?
+        factory.put("ViStart", (world, x, y, z, rand) -> {
+            Biome biome = world.getBiome(new BlockPos(x, y, z));
+            VillageConfig config = (VillageConfig) world.getChunkProvider().getChunkGenerator().getStructureConfig(biome, Feature.VILLAGE);
+            if (config == null) config = new VillageConfig(0, VillagePieces.Type.OAK);
+            return new VillagePieces.Start(0, rand, x, z, Collections.emptyList(), config, biome);
+        });
         factory.put("ViW", (world, x, y, z, rand) -> new VillagePieces.Well(null, 0, rand, x, z));
         factory.put("ViBH", (world, x, y, z, rand) -> {
             EnumFacing face = EnumFacing.Plane.HORIZONTAL.random(rand);

@@ -37,8 +37,8 @@ public class CommandStructure {
     private static final SimpleCommandExceptionType START_FAILED_EXCEPTION = new SimpleCommandExceptionType(
             new TextComponentTranslation("commands.structure.start.failed")
     );
-    private static final SimpleCommandExceptionType PIECE_EMPTY_EXCEPTION = new SimpleCommandExceptionType(
-            new TextComponentTranslation("commands.structure.piece.empty")
+    private static final SimpleCommandExceptionType PIECE_FAILED_EXCEPTION = new SimpleCommandExceptionType(
+            new TextComponentTranslation("commands.structure.piece.failed")
     );
     private static final SimpleCommandExceptionType COMPLETE_EXCEPTION = new SimpleCommandExceptionType(
             new TextComponentTranslation("commands.structure.continue.complete")
@@ -165,9 +165,6 @@ public class CommandStructure {
         SharedSeedRandom rand = new SharedSeedRandom();
 
         StructurePiece piece = PieceFactory.getPiece(pieceName, world, blockPos.getX(), blockPos.getY(), blockPos.getZ(), rand);
-        if (piece == null)
-            throw PIECE_EMPTY_EXCEPTION.create();
-
         lastWorld = world;
 
         if (dataTag != null) {
@@ -181,7 +178,8 @@ public class CommandStructure {
 
         MutableBoundingBox bb = piece.getBoundingBox();
         MutableBoundingBox newBB = new MutableBoundingBox(bb.minX - 1, bb.minZ - 1, bb.maxX + 1, bb.maxZ + 1);
-        piece.addComponentParts(world, rand, newBB, new ChunkPos(blockPos));
+        if (!piece.addComponentParts(world, rand, newBB, new ChunkPos(blockPos)))
+            throw PIECE_FAILED_EXCEPTION.create();
         setLastBoundingBox(piece.getBoundingBox());
         sendMessage(world);
         source.sendFeedback(new TextComponentTranslation("commands.structure.piece.success", bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ), true);
