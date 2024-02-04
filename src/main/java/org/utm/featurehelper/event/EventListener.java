@@ -3,9 +3,14 @@ package org.utm.featurehelper.event;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.utm.featurehelper.command.CommandStructure;
 import org.utm.featurehelper.render.RenderBoundingBox;
 import org.utm.featurehelper.render.RenderTrail;
 
@@ -27,10 +32,21 @@ public class EventListener {
     public void onEntityJoinWorld(EntityJoinWorldEvent event) {
         if (!event.getWorld().isRemote && event.getEntity() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) event.getEntity();
-            // CommandStructure.sendMessageToPlayer(player, event.getWorld());
+            CommandStructure.sendMessageToPlayer(player, event.getWorld());
             // CavesPatcher.sendMessageToPlayer(player, event.getWorld());
             // CavesHellPatcher.sendMessageToPlayer(player, event.getWorld());
             // RavinePatcher.sendMessageToPlayer(player, event.getWorld());
+        }
+    }
+
+    @SubscribeEvent
+    public void onChunkLoad(ChunkEvent.Load event) {
+        if (!((World) event.getWorld()).isRemote) {
+            Chunk chunk = (Chunk) event.getChunk();
+            Heightmap heightMap = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE);
+            chunk.heightMap.put(Heightmap.Type.WORLD_SURFACE_WG, heightMap);
+            heightMap = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR);
+            chunk.heightMap.put(Heightmap.Type.OCEAN_FLOOR_WG, heightMap);
         }
     }
 

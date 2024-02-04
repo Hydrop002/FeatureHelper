@@ -129,6 +129,8 @@ publishing {
     }
 }
 
+compileJava.options.encoding = "UTF-8"
+
 processResources {
     inputs.property 'version', project.version
 

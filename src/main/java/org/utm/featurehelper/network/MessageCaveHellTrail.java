@@ -15,6 +15,8 @@ public class MessageCaveHellTrail {
 
     public NBTTagCompound compound;
 
+    public MessageCaveHellTrail() {}
+
     public MessageCaveHellTrail(PacketBuffer buf) {
         this.compound = buf.readCompoundTag();
     }

@@ -14,6 +14,8 @@ public class MessageBoundingBox {
 
     public NBTTagCompound compound;
 
+    public MessageBoundingBox() {}
+
     public MessageBoundingBox(PacketBuffer buf) {
         this.compound = buf.readCompoundTag();
     }

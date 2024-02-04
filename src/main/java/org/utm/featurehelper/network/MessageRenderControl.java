@@ -12,6 +12,8 @@ public class MessageRenderControl {
     public byte renderType;
     public boolean isRender;
 
+    public MessageRenderControl() {}
+
     public MessageRenderControl(PacketBuffer buf) {  // decoder: buf -> message
         this.renderType = buf.readByte();
         this.isRender = buf.readBoolean();
