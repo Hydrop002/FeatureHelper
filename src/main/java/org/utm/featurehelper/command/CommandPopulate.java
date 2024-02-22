@@ -1,6 +1,5 @@
 package org.utm.featurehelper.command;
 
-import com.google.common.base.Predicate;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -14,7 +13,6 @@ import org.utm.featurehelper.feature.FeatureFactory;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,10 +59,6 @@ public class CommandPopulate extends CommandBase {
                 int i = 0, j = 0;
                 for (; i < classList.length; ++i) {
                     Class<?> clazz = classList[i];
-                    if (clazz.equals(Predicate.class)) {
-                        ParameterizedType genericType = (ParameterizedType) constructor.getGenericParameterTypes()[i];
-                        clazz = (Class<?>) genericType.getActualTypeArguments()[0];
-                    }
                     if (FeatureArgsParser.isDouble(clazz)) {
                         if (j + 1 >= restArgs.length) break;
                         Object res = FeatureArgsParser.parseDouble(clazz, sender, restArgs[j++], restArgs[j++]);

@@ -56,7 +56,7 @@ public class FeatureFactory {
         factory.put(getName(WorldGenEndPodium.class), WorldGenEndPodium.class);
         factory.put(getName(WorldGenEndGateway.class), WorldGenEndGateway.class);
         factory.put(getName(WorldGenEndIsland.class), WorldGenEndIsland.class);
-        factory.put(getName(WorldGenFossils.class), FossilsPatcher.class);
+        factory.put(getName(WorldGenFossils.class), FossilsPatcher.class);  // re-render
     }
 
     public static String getName(Class<? extends WorldGenerator> clazz) {

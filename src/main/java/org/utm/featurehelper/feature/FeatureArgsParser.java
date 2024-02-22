@@ -1,10 +1,12 @@
 package org.utm.featurehelper.feature;
 
+import com.google.common.base.Predicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.BlockTallGrass;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -39,6 +41,10 @@ public class FeatureArgsParser {
             int type = CommandBase.parseInt(str);
             if (type < 0 || type >= BlockFlower.EnumFlowerType.values().length) type = 0;
             return BlockFlower.EnumFlowerType.values()[type];
+        });
+        dispatcher1.put(Predicate.class, (sender, str) -> {  // IBlockState
+            Block block = CommandBase.getBlockByText(sender, str);
+            return BlockMatcher.forBlock(block);
         });
     }
 
