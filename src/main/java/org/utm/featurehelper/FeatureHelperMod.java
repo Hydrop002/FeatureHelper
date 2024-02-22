@@ -9,6 +9,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.utm.featurehelper.command.CommandFeature;
 import org.utm.featurehelper.command.CommandStructure;
 import org.utm.featurehelper.event.EventListener;
 import org.utm.featurehelper.network.*;
@@ -43,6 +44,6 @@ public class FeatureHelperMod
         // CommandCave.register(dispatcher);
         // CommandCaveHell.register(dispatcher);
         // CommandRavine.register(dispatcher);
-        // CommandPopulate.register(dispatcher);
+        CommandFeature.register(dispatcher);
     }
 }

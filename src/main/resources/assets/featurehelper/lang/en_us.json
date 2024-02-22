@@ -51,10 +51,17 @@
   "commands.ravine.trail.show.success": "Show all ravine trails.",
   "commands.ravine.trail.failed": "Command sender is not a player!",
 
-  "commands.populate.usage": "/populate <x> <y> <z> <featureName> [args...]",
-  "commands.populate.success": "Populate success.",
-  "commands.populate.failed": "Populate failed.",
-  "commands.populate.invalidName": "The name of feature is invalid!",
-  "commands.populate.invalidArgs": "Invalid args!",
-  "commands.populate.args": "§2Args: %s."
+  "commands.feature.success": "Place feature success",
+  "commands.feature.failed": "Failed to place feature here",
+  "commands.feature.args": "Invalid args in config",
+  "argument.feature.invalid": "Unknown feature %s",
+  "argument.feature.args.candidate": "No candidate constructor",
+  "argument.feature.args.exceed": "Too much args",
+  "argument.feature.args.separator": "Expected separator , for feature args",
+  "argument.feature.args.unclosed": "Expected closing ) for feature args",
+  "argument.feature.args.invalid": "Invalid args",
+  "argument.feature.args.list.separator": "Expected separator , for feature arg:List",
+  "argument.feature.args.list.unclosed": "Expected closing ] for feature arg:List",
+  "argument.feature.args.fluid.invalid": "Unknown fluid type %s",
+  "argument.feature.args.predicate.invalid": "Unknown predicate %s"
 }
