@@ -1,6 +1,8 @@
 package org.utm.featurehelper.feature;
 
 import net.minecraft.world.gen.feature.*;
+import org.utm.featurehelper.feature.patch.BlockBlobPatcher;
+import org.utm.featurehelper.feature.patch.FossilsPatcher;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -22,7 +24,7 @@ public class FeatureFactory {
         factory.put(getName(JungleGrassFeature.class), JungleGrassFeature.class);
         factory.put(getName(SphereReplaceFeature.class), SphereReplaceFeature.class);  // SphereReplaceConfig
         factory.put(getName(BlockWithContextFeature.class), BlockWithContextFeature.class);  // BlockWithContextConfig
-        factory.put(getName(BlockBlobFeature.class), BlockBlobFeature.class);  // BlockBlobConfig
+        factory.put(getName(BlockBlobFeature.class), BlockBlobPatcher.class);  // BlockBlobConfig
         factory.put(getName(DefaultFlowersFeature.class), DefaultFlowersFeature.class);
         factory.put(getName(PlainsFlowersFeature.class), PlainsFlowersFeature.class);
         factory.put(getName(SwampFlowersFeature.class), SwampFlowersFeature.class);
@@ -40,7 +42,7 @@ public class FeatureFactory {
         factory.put(getName(KelpFeature.class), KelpFeature.class);
         factory.put(getName(MinableFeature.class), MinableFeature.class);  // MinableConfig
         factory.put(getName(EndGatewayFeature.class), EndGatewayFeature.class);  // EndGatewayConfig
-        factory.put(getName(FossilsFeature.class), FossilsFeature.class);
+        factory.put(getName(FossilsFeature.class), FossilsPatcher.class);
         factory.put(getName(SeaPickleFeature.class), SeaPickleFeature.class);  // CountConfig
         factory.put(getName(DungeonsFeature.class), DungeonsFeature.class);
         // CompositeFeature.class
@@ -86,6 +88,11 @@ public class FeatureFactory {
         return clazz.getSimpleName().split("Feature")[0];
     }
 
+    private static Type getGenericSuperclass(Class<?> clazz) {
+        Type t = clazz.getGenericSuperclass();
+        return t instanceof ParameterizedType ? t : getGenericSuperclass((Class<?>) t);
+    }
+
     public static Set<String> getNameSet() {
         return factory.keySet();
     }
@@ -95,14 +102,10 @@ public class FeatureFactory {
     }
 
     public static Constructor<?>[] getConfigConstructorList(String name) {
-        Type t = factory.get(name).getGenericSuperclass();
-        if (t instanceof ParameterizedType) {
-            ParameterizedType type = (ParameterizedType) t;
-            Class<?> clazz = (Class<?>) type.getActualTypeArguments()[0];
-            return clazz.getDeclaredConstructors();
-        } else {
-            return getConfigConstructorList(getName((Class<?>) t));
-        }
+        Type t = getGenericSuperclass(factory.get(name));
+        ParameterizedType type = (ParameterizedType) t;
+        Class<?> clazz = (Class<?>) type.getActualTypeArguments()[0];
+        return clazz.getDeclaredConstructors();
     }
 
     public static Feature<? extends IFeatureConfig> getFeature(Constructor<?> constructor, Object... args) {
