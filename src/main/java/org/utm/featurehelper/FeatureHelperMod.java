@@ -9,6 +9,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.utm.featurehelper.command.CommandCarve;
 import org.utm.featurehelper.command.CommandFeature;
 import org.utm.featurehelper.command.CommandStructure;
 import org.utm.featurehelper.event.EventListener;
@@ -32,18 +33,14 @@ public class FeatureHelperMod
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         NetworkManager.instance.registerMessage(0, MessageBoundingBox.class, MessageBoundingBox::encode, MessageBoundingBox::new, MessageBoundingBox::handler);
-        NetworkManager.instance.registerMessage(1, MessageCaveTrail.class, MessageCaveTrail::encode, MessageCaveTrail::new, MessageCaveTrail::handler);
-        NetworkManager.instance.registerMessage(2, MessageCaveHellTrail.class, MessageCaveHellTrail::encode, MessageCaveHellTrail::new, MessageCaveHellTrail::handler);
-        NetworkManager.instance.registerMessage(3, MessageRavineTrail.class, MessageRavineTrail::encode, MessageRavineTrail::new, MessageRavineTrail::handler);
-        NetworkManager.instance.registerMessage(4, MessageRenderControl.class, MessageRenderControl::encode, MessageRenderControl::new, MessageRenderControl::handler);
+        NetworkManager.instance.registerMessage(1, MessageCarveTrail.class, MessageCarveTrail::encode, MessageCarveTrail::new, MessageCarveTrail::handler);
+        NetworkManager.instance.registerMessage(2, MessageRenderControl.class, MessageRenderControl::encode, MessageRenderControl::new, MessageRenderControl::handler);
     }
 
     public void serverStarting(FMLServerStartingEvent event) {
         CommandDispatcher<CommandSource> dispatcher = event.getCommandDispatcher();
         CommandStructure.register(dispatcher);
-        // CommandCave.register(dispatcher);
-        // CommandCaveHell.register(dispatcher);
-        // CommandRavine.register(dispatcher);
+        CommandCarve.register(dispatcher);
         CommandFeature.register(dispatcher);
     }
 }

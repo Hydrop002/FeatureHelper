@@ -29,11 +29,7 @@ public class MessageRenderControl {
             if (this.renderType == 0)
                 RenderBoundingBox.instance.isRender = this.isRender;
             else if (this.renderType == 1)
-                RenderTrail.caveRenderer.isRender = this.isRender;
-            else if (renderType == 2)
-                RenderTrail.caveHellRenderer.isRender = this.isRender;
-            else if (renderType == 3)
-                RenderTrail.ravineRenderer.isRender = this.isRender;
+                RenderTrail.instance.isRender = this.isRender;
         });
     }
 

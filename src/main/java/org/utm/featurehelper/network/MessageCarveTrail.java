@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class MessageCaveHellTrail {
+public class MessageCarveTrail {
 
     public NBTTagCompound compound;
 
-    public MessageCaveHellTrail() {}
+    public MessageCarveTrail() {}
 
-    public MessageCaveHellTrail(PacketBuffer buf) {
+    public MessageCarveTrail(PacketBuffer buf) {
         this.compound = buf.readCompoundTag();
     }
 
@@ -28,7 +28,7 @@ public class MessageCaveHellTrail {
     public void handler(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             NBTTagList list = this.compound.getList("TunnelList", 10);
-            RenderTrail.caveHellRenderer.posList = new ArrayList<>();
+            RenderTrail.instance.posList = new ArrayList<>();
             for (int i = 0; i < list.size(); ++i) {
                 NBTTagCompound listTag = list.getCompound(i);
                 NBTTagList subList = listTag.getList("PosList", 10);
@@ -44,7 +44,7 @@ public class MessageCaveHellTrail {
                                 posTag.getDouble("z")
                         ));
                 }
-                RenderTrail.caveHellRenderer.posList.add(tunnel);
+                RenderTrail.instance.posList.add(tunnel);
             }
         });
     }

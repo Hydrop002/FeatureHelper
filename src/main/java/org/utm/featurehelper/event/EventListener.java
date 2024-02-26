@@ -10,6 +10,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.utm.featurehelper.command.CommandCarve;
 import org.utm.featurehelper.command.CommandStructure;
 import org.utm.featurehelper.render.RenderBoundingBox;
 import org.utm.featurehelper.render.RenderTrail;
@@ -23,9 +24,7 @@ public class EventListener {
         EntityLivingBase entity = Minecraft.getInstance().player;
         RenderBoundingBox.instance.render(entity, event.getPartialTicks());
         RenderBoundingBox.instance.renderList(entity, event.getPartialTicks());
-        RenderTrail.caveRenderer.renderList(entity, event.getPartialTicks());
-        RenderTrail.caveHellRenderer.renderList(entity, event.getPartialTicks());
-        RenderTrail.ravineRenderer.renderList(entity, event.getPartialTicks());
+        RenderTrail.instance.renderList(entity, event.getPartialTicks());
     }
 
     @SubscribeEvent
@@ -33,9 +32,7 @@ public class EventListener {
         if (!event.getWorld().isRemote && event.getEntity() instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) event.getEntity();
             CommandStructure.sendMessageToPlayer(player, event.getWorld());
-            // CavesPatcher.sendMessageToPlayer(player, event.getWorld());
-            // CavesHellPatcher.sendMessageToPlayer(player, event.getWorld());
-            // RavinePatcher.sendMessageToPlayer(player, event.getWorld());
+            CommandCarve.sendMessageToPlayer(player, event.getWorld());
         }
     }
 

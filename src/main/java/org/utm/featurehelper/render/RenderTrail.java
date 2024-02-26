@@ -17,9 +17,7 @@ import java.util.List;
 
 public class RenderTrail {
 
-    public static RenderTrail caveRenderer = new RenderTrail();
-    public static RenderTrail caveHellRenderer = new RenderTrail();
-    public static RenderTrail ravineRenderer = new RenderTrail();
+    public static RenderTrail instance = new RenderTrail();
 
     public ICamera camera;
 
