@@ -9,6 +9,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.utm.featurehelper.command.CommandStructure;
 import org.utm.featurehelper.event.EventListener;
 import org.utm.featurehelper.network.MessageBoundingBox;
 import org.utm.featurehelper.network.MessageCarveTrail;
@@ -39,7 +40,7 @@ public class FeatureHelperMod
 
     private void serverStarting(FMLServerStartingEvent event) {
         CommandDispatcher<CommandSource> dispatcher = event.getServer().getCommands().getDispatcher();
-        //CommandStructure.register(dispatcher);
+        CommandStructure.register(dispatcher);
         //CommandCarve.register(dispatcher);
         //CommandFeature.register(dispatcher);
     }
