@@ -2,6 +2,7 @@
   "commands.structure.start.success": "Place structure start at (%d,%d,%d)",
   "commands.structure.start.failed": "Failed to place structure start here",
   "argument.structure.start.invalid": "Unknown structure start %s",
+  "argument.structure.start.config": "%s",
   "commands.structure.continue.success": "Continue to generate structures",
   "commands.structure.continue.complete": "No more structures can generate",
   "commands.structure.continue.failed": "Incorrect dimension",
@@ -22,13 +23,6 @@
   "commands.feature.failed": "Failed to place feature here",
   "commands.feature.args": "Invalid args in config",
   "argument.feature.invalid": "Unknown feature %s",
-  "argument.feature.args.candidate": "No candidate constructor",
-  "argument.feature.args.exceed": "Too much args",
-  "argument.feature.args.separator": "Expected separator , for feature args",
-  "argument.feature.args.unclosed": "Expected closing ) for feature args",
-  "argument.feature.args.invalid": "Invalid args",
-  "argument.feature.args.list.separator": "Expected separator , for feature arg:List",
-  "argument.feature.args.list.unclosed": "Expected closing ] for feature arg:List",
-  "argument.feature.args.fluid.invalid": "Unknown fluid type %s",
-  "argument.feature.args.predicate.invalid": "Unknown predicate %s"
+
+  "argument.json.failed": "%s"
 }

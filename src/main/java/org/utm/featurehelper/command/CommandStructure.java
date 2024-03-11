@@ -39,7 +39,7 @@ import org.utm.featurehelper.feature.PieceFactory;
 
 import javax.annotation.Nullable;
 
-public class CommandStructure {
+public class CommandStructure {  // todo Mixin
 
     private static final SimpleCommandExceptionType ERROR_START_FAILED = new SimpleCommandExceptionType(
             new TranslationTextComponent("commands.structure.start.failed")
@@ -91,7 +91,7 @@ public class CommandStructure {
                                                                         BoolArgumentType.getBool(context, "debug"),
                                                                         NBTCompoundTagArgument.getCompoundTag(context, "dataTag")
                                                                 ))))))
-                                /*.then(Commands.literal("unconfigured")
+                                .then(Commands.literal("unconfigured")
                                         .then(Commands.argument("structureName", StructureArgument.structure())
                                                 .executes(context -> generateStructure(
                                                         context.getSource(),
@@ -114,7 +114,7 @@ public class CommandStructure {
                                                                         StructureArgument.getStructure(context, "structureName"),
                                                                         BoolArgumentType.getBool(context, "debug"),
                                                                         NBTCompoundTagArgument.getCompoundTag(context, "dataTag")
-                                                                ))))))*/))
+                                                                ))))))))
                 /*.then(Commands.literal("piece")
                         .then(Commands.argument("pos", BlockPosArgument.blockPos())
                                 .then(Commands.argument("pieceName", PieceArgument.piece())
@@ -151,6 +151,9 @@ public class CommandStructure {
         Biome biome = world.getBiome(blockPos);
         StructureStart<FC> structureStart = structureFeature.feature.getStartFactory().create(structureFeature.feature, chunkPos.x, chunkPos.z, MutableBoundingBox.getUnknownBox(), 0, rand.nextLong());
         structureStart.generatePieces(registries, generator, templateManager, chunkPos.x, chunkPos.z, biome, structureFeature.config);
+
+        if (!structureStart.isValid())
+            throw ERROR_START_FAILED.create();
 
         start = structureStart;
         startWorld = world;
